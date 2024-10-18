@@ -144,7 +144,11 @@ namespace Geo3D
             return true;
         }
 
-
+        // This is my alternative approach to the triangle-AABB test.
+        // It differs from SAT-derived solutions such as the Schwarz-Seidel algo above by finding
+        // positive intersections early and returning.  SAT solutions only exit early on disjoint
+        // cases.  This means that in situations where there are many intersecting triangles it 
+        // will be significantly faster than the Schwarz-Seidel.
         public static bool Test2(Triangle triangle, AABB aabb)
         {
             // Early out if the AABB of the triangle is disjoint with the AABB.
@@ -156,19 +160,20 @@ namespace Geo3D
             if (Test(triangle.Edge1, aabb)) return true;
             if (Test(triangle.Edge2, aabb)) return true;
 
-            // Degenerate triangle, if none of the edges intersect the box then don't test any further.
+            // If none of the edges of a degenerate triangle intersect then don't test any further.
             var n = triangle.Cross();
             if (n.sqrMagnitude < Mathf.Epsilon) return false;
             
             // Test the four internal diagonals of the box against the triangle.
-            // The inverse of the box internal axis length is calculated once and used for all axes.
+            // This catches the situations where the middle of the triangle is intersected
+            // by the box but not any of the edges.
             float t;
             var min = aabb.Min;
             var max = aabb.Max;
             var axis0 = max - min;
             var invLength = 1.0f / axis0.magnitude;
 
-            if (Test(new Ray(aabb.Min, axis0 * invLength), triangle, out t))
+            if (Test(new Ray(min, axis0 * invLength), triangle, out t))
             {
                 if (t * invLength <= 1.0f) return true;
             }

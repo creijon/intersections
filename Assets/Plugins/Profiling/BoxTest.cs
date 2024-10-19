@@ -86,7 +86,7 @@ public class BoxTest : MonoBehaviour
 
             Vector3 min = Vector3.Min(a, b);
             Vector3 max = Vector3.Max(a, b);
-            /*
+
             // Pick one of the three axes to snap to the outer box.
             int clampAxis = Random.Range(0, 3);
 
@@ -105,7 +105,7 @@ public class BoxTest : MonoBehaviour
                 min.z = 0.0f;
                 max.z = _max.z;
             }
-            */
+
             _boxes[i] = new Box(min, max);
         }
 

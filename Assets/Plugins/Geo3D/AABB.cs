@@ -35,6 +35,21 @@ namespace Geo3D
             _centre = min + _extents;
         }
 
+        public Geo2D.Rect XY
+        {
+            get { return new Geo2D.Rect(Util.XY(_centre), Util.XY(_extents)); }
+        }
+
+        public Geo2D.Rect YZ
+        {
+            get { return new Geo2D.Rect(Util.YZ(_centre), Util.YZ(_extents)); }
+        }
+
+        public Geo2D.Rect ZX
+        {
+            get { return new Geo2D.Rect(Util.ZX(_centre), Util.ZX(_extents)); }
+        }
+
         public Vector3 _centre;
         public Vector3 _extents;
     }

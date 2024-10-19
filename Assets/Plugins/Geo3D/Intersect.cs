@@ -119,27 +119,12 @@ namespace Geo3D
         // https://michael-schwarz.com/research/publ/2010/vox/
         public static bool Test(Triangle triangle, AABB aabb)
         {
-            // Early out if the bounds of the triangle are disjoint with the AABB.
-            var triAABB = triangle.CalcBounds();
-            if (!Test(triAABB, aabb)) return false;
+            if (!Test(triangle.CalcBounds(), aabb)) return false;
+            if (!Test(triangle.CalcPlane(), aabb)) return false;
 
-            var plane = triangle.CalcPlane();
-            if (!Test(plane, aabb)) return false;
-
-            // Test triangle against XY projection of AABB.
-            var rectXY = new Geo2D.Rect(Util.XY(aabb._centre), Util.XY(aabb._extents));
-            var triXY = new Geo2D.Triangle(Util.XY(triangle._v0), Util.XY(triangle._v1), Util.XY(triangle._v2));
-            if (!Geo2D.Intersect.Test(triXY, rectXY)) return false;
-
-            // Test triangle against YZ projection of AABB.
-            var rectYZ = new Geo2D.Rect(Util.YZ(aabb._centre), Util.YZ(aabb._extents));
-            var triYZ = new Geo2D.Triangle(Util.YZ(triangle._v0), Util.YZ(triangle._v1), Util.YZ(triangle._v2));
-            if (!Geo2D.Intersect.Test(triYZ, rectYZ)) return false;
-
-            // Test triangle against ZX projection of AABB.
-            var rectZX = new Geo2D.Rect(Util.ZX(aabb._centre), Util.ZX(aabb._extents));
-            var triZX = new Geo2D.Triangle(Util.ZX(triangle._v0), Util.ZX(triangle._v1), Util.ZX(triangle._v2));
-            if (!Geo2D.Intersect.Test(triZX, rectZX)) return false;
+            if (!Geo2D.Intersect.Test(triangle.XY, aabb.XY)) return false;
+            if (!Geo2D.Intersect.Test(triangle.YZ, aabb.YZ)) return false;
+            if (!Geo2D.Intersect.Test(triangle.ZX, aabb.ZX)) return false;
 
             return true;
         }
@@ -152,8 +137,7 @@ namespace Geo3D
         public static bool Test2(Triangle triangle, AABB aabb)
         {
             // Early out if the AABB of the triangle is disjoint with the AABB.
-            var triAABB = triangle.CalcBounds();
-            if (!Test(triAABB, aabb)) return false;
+            if (!Test(triangle.CalcBounds(), aabb)) return false;
 
             // Test three triangle edges against box.
             if (Test(triangle.Edge0, aabb)) return true;

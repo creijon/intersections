@@ -11,35 +11,12 @@ namespace Geo3D
             _v2 = v2;
         }
 
-        public Edge Edge0
-        {
-            get { return new Edge(_v0, _v1); }
-        }
-
-        public Edge Edge1
-        {
-            get { return new Edge(_v1, _v2); }
-        }
-
-        public Edge Edge2
-        {
-            get { return new Edge(_v2, _v0); }
-        }
-
-        public Geo2D.Triangle XY
-        {
-            get { return new Geo2D.Triangle(Util.XY(_v0), Util.XY(_v1), Util.XY(_v2)); }
-        }
-
-        public Geo2D.Triangle YZ
-        {
-            get { return new Geo2D.Triangle(Util.YZ(_v0), Util.YZ(_v1), Util.YZ(_v2)); }
-        }
-
-        public Geo2D.Triangle ZX
-        {
-            get { return new Geo2D.Triangle(Util.ZX(_v0), Util.ZX(_v1), Util.ZX(_v2)); }
-        }
+        public Edge Edge0 => new Edge(_v0, _v1);
+        public Edge Edge1 => new Edge(_v1, _v2);
+        public Edge Edge2 => new Edge(_v2, _v0); 
+        public Geo2D.Triangle XY => new Geo2D.Triangle(Util.XY(_v0), Util.XY(_v1), Util.XY(_v2));
+        public Geo2D.Triangle YZ => new Geo2D.Triangle(Util.YZ(_v0), Util.YZ(_v1), Util.YZ(_v2));
+        public Geo2D.Triangle ZX => new Geo2D.Triangle(Util.ZX(_v0), Util.ZX(_v1), Util.ZX(_v2));
 
         public AABB CalcBounds()
         {

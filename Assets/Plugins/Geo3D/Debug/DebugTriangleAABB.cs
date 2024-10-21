@@ -21,7 +21,7 @@ namespace Geo3D
 
             Color color = new Color(1.0f, 1.0f, 0.0f);
 
-            if (Intersect.Test(_triangle._triangle, _aabb._aabb))
+            if (Intersect.Test2(_triangle._triangle, _aabb._aabb))
             {
                 _aabb._color = Color.green;
             }

@@ -1,20 +1,18 @@
-using System.Collections;
-using System.Collections.Generic;
-
 using UnityEngine;
 using Unity.Collections;
 using System.IO;
 using Geo3D;
 
+[RequireComponent(typeof(MeshFilter))]
 class Box
 {
     public Box(Vector3 min, Vector3 max)
     {
-        _aabb = new Geo3D.AABB(min, max, true);
+        _aabb = new AABB(min, max, true);
         _triangleCount = 0;
     }
 
-    public Geo3D.AABB _aabb;
+    public AABB _aabb;
     public uint _triangleCount;
 }
 
@@ -71,7 +69,7 @@ public class BoxTest : MonoBehaviour
         _firstFrame = true;
         _boxes = new Box[_boxCount];
 
-        foreach (Vector3 vert in vertices)
+        foreach (var vert in vertices)
         {
             _min = Vector3.Min(vert, _min);
             _max = Vector3.Max(vert, _max);
@@ -109,7 +107,7 @@ public class BoxTest : MonoBehaviour
             _boxes[i] = new Box(min, max);
         }
 
-        System.Diagnostics.Stopwatch stopWatch = new System.Diagnostics.Stopwatch();
+        Diagnostics.Stopwatch stopWatch = new Diagnostics.Stopwatch();
         stopWatch.Start();
 
         uint totalIntersections = 0;
@@ -123,10 +121,10 @@ public class BoxTest : MonoBehaviour
                 var t0 = vertices[indices[j + 0]];
                 var t1 = vertices[indices[j + 1]];
                 var t2 = vertices[indices[j + 2]];
-                var tri = new Geo3D.Triangle(t0, t1, t2);
+                var tri = new Triangle(t0, t1, t2);
 
-                bool test1 = Geo3D.Intersect.Test(tri, _boxes[i]._aabb);
-                bool test2 = test1;// Geo3D.Intersect.Test2(tri, _boxes[i]._aabb);
+                bool test1 = Intersect.Test(tri, _boxes[i]._aabb);
+                bool test2 = test1;// Intersect.Test2(tri, _boxes[i]._aabb);
 
                 if (test1)
                 {
@@ -153,10 +151,10 @@ public class BoxTest : MonoBehaviour
 
         stopWatch.Stop();
 
-        System.TimeSpan ts = stopWatch.Elapsed;
+        TimeSpan ts = stopWatch.Elapsed;
 
         // Format and display the TimeSpan value.
-        string elapsedTime = System.String.Format("{0:00}:{1:00}:{2:00}.{3:00}",
+        string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}",
             ts.Hours, ts.Minutes, ts.Seconds,
             ts.Milliseconds / 10);
 

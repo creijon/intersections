@@ -1,0 +1,28 @@
+Mine:
+
+Tests: 69451000 Intersections: 6843697 Runtime: 00:00:42.39
+
+
+Schwarz-Seidel, no early AABB check:
+
+Tests: 69451000 Intersections: 6843700 Runtime: 00:01:45.48
+
+
+Schwarz-Seidel, with early AABB check:
+
+Tests: 69451000 Intersections: 6843700 Runtime: 00:00:52.68
+
+
+Schwarz-Seidel, with early AABB check and the plane test last:
+
+Tests: 69451000 Intersections: 6843700 Runtime: 00:00:50.81
+
+
+Without the boxes being clamped to one axis:
+
+Mine:
+Tests: 69451000 Intersections: 3081012 Runtime: 00:00:42.29
+
+
+Schwarz-Seidel, with early AABB check:
+Tests: 69451000 Intersections: 3081014 Runtime: 00:00:41.49

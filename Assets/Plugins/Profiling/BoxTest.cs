@@ -4,24 +4,26 @@ using System.IO;
 using Geo3D;
 
 [RequireComponent(typeof(MeshFilter))]
-class Box
-{
-    public Box(Vector3 min, Vector3 max)
-    {
-        _aabb = new AABB(min, max, true);
-        _triangleCount = 0;
-    }
-
-    public AABB _aabb;
-    public uint _triangleCount;
-}
-
 public class BoxTest : MonoBehaviour
 {
+    class Box
+    {
+        public Box(Vector3 min, Vector3 max)
+        {
+            _aabb = new AABB(min, max, true);
+            _triangleCount = 0;
+        }
+
+        public AABB _aabb;
+        public uint _triangleCount;
+    }
+
     Mesh _mesh;
     Vector3 _min;
     Vector3 _max;
     bool _firstFrame = true;
+    public bool _mySolution = false;
+    public bool _comparison = false;
     public int _randomSeed = 100;
     public int _boxCount = 1000;
     public bool _myRoutine = true;
@@ -79,11 +81,11 @@ public class BoxTest : MonoBehaviour
         Random.InitState(_randomSeed);
         for (int i = 0; i < _boxCount; ++i)
         {
-            Vector3 a = RandomVector();
-            Vector3 b = RandomVector();
+            var a = RandomVector();
+            var b = RandomVector();
 
-            Vector3 min = Vector3.Min(a, b);
-            Vector3 max = Vector3.Max(a, b);
+            var min = Vector3.Min(a, b);
+            var max = Vector3.Max(a, b);
 
             // Pick one of the three axes to snap to the outer box.
             int clampAxis = Random.Range(0, 3);
@@ -107,14 +109,14 @@ public class BoxTest : MonoBehaviour
             _boxes[i] = new Box(min, max);
         }
 
-        Diagnostics.Stopwatch stopWatch = new Diagnostics.Stopwatch();
+        var stopWatch = new System.Diagnostics.Stopwatch();
         stopWatch.Start();
 
         uint totalIntersections = 0;
 
         for (int i = 0; i < _boxCount; ++i)
         {
-            // Test all the triangles against them.
+            // Test all the triangles against the boxes.
             // Store the results.
             for (int j = 0; j < indices.Length; j += 3)
             {
@@ -123,26 +125,39 @@ public class BoxTest : MonoBehaviour
                 var t2 = vertices[indices[j + 2]];
                 var tri = new Triangle(t0, t1, t2);
 
-                bool test1 = Intersect.Test(tri, _boxes[i]._aabb);
-                bool test2 = test1;// Intersect.Test2(tri, _boxes[i]._aabb);
+                bool test1 = false;
+                
+                if (_mySolution)
+                {
+                    test1 = Intersect.Test2(tri, _boxes[i]._aabb);
+                }
+                else
+                {
+                    test1 = Intersect.Test(tri, _boxes[i]._aabb);
+
+                    if (_comparison)
+                    {
+                        bool test2 = Intersect.Test2(tri, _boxes[i]._aabb);
+
+                        if (test1 != test2)
+                        {
+                            Debug.Log("Mismatch on box " + i + ", triangle " + j);
+                            Debug.Log("Base:" + test1 + " Mine:" + test2);
+
+                            var c = _boxes[i]._aabb._centre;
+                            var e = _boxes[i]._aabb._extents;
+                            Debug.Log("Centre: [" + c.x + "," + c.y + "," + c.z + "]");
+                            Debug.Log("Extents: [" + e.x + "," + e.y + "," + e.z + "]");
+                            Debug.Log("t0: [" + t0.x + "," + t0.y + "," + t0.z + "]");
+                            Debug.Log("t1: [" + t1.x + "," + t1.y + "," + t1.z + "]");
+                            Debug.Log("t2: [" + t2.x + "," + t2.y + "," + t2.z + "]");
+                        }
+                    }
+                }
 
                 if (test1)
                 {
                     _boxes[i]._triangleCount += 1;
-                }
-
-                if (test1 != test2)
-                {
-                    Debug.Log("Mismatch on box " + i + ", triangle " + j);
-                    Debug.Log("Base:" + test1 + " Mine:" + test2);
-
-                    var c = _boxes[i]._aabb._centre;
-                    var e = _boxes[i]._aabb._extents;
-                    Debug.Log("Centre: [" + c.x + "," + c.y + "," + c.z + "]");
-                    Debug.Log("Extents: [" + e.x + "," + e.y + "," + e.z + "]");
-                    Debug.Log("t0: [" + t0.x + "," + t0.y + "," + t0.z + "]");
-                    Debug.Log("t1: [" + t1.x + "," + t1.y + "," + t1.z + "]");
-                    Debug.Log("t2: [" + t2.x + "," + t2.y + "," + t2.z + "]");
                 }
             }
 
@@ -151,10 +166,10 @@ public class BoxTest : MonoBehaviour
 
         stopWatch.Stop();
 
-        TimeSpan ts = stopWatch.Elapsed;
+        var ts = stopWatch.Elapsed;
 
         // Format and display the TimeSpan value.
-        string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}",
+        var elapsedTime = System.String.Format("{0:00}:{1:00}:{2:00}.{3:00}",
             ts.Hours, ts.Minutes, ts.Seconds,
             ts.Milliseconds / 10);
 
@@ -175,8 +190,6 @@ public class BoxTest : MonoBehaviour
             {
                 WriteResults("C:\\Users\\joncr\\triangleAABB_Canonical.txt");
             }
-
         }
     }
-
 }

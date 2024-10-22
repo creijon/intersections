@@ -34,7 +34,7 @@ In addition I've implemented a new triangle:AABB solution which takes a differen
 2. Test each of the three triangle edges against the AABB.  Exit early with an intersection.
 3. Test each of the four internal diagonal axes of the AABB against the triangle, for the cases where the box intersects the face of the triangle without touching any of its edges.
 
-The Schwarz-Seidel test can only exit early in situations where the shapes are disjoint, so finding intersecting shapes requires all the constitute tests to be checked.  The new approach inverts this logic; after an initial broad-phase rejection using bounding boxes, it can return as soon as one of the potential intersection cases is met.
+The Schwarz-Seidel algorithm can only exit early in situations where the shapes are disjoint, so finding intersecting shapes requires all the individual tests to be checked.  The new approach inverts this logic; after an initial broad-phase rejection using bounding boxes, it can return as soon as one of the potential intersection cases is met.
 
 This means that it is significantly more efficient if the domain is mostly made up of intersecting shapes.  This is often the case when performing a series of hierarchial tests such as with the generation of Sparse Voxel Octrees from triangle meshes.
 

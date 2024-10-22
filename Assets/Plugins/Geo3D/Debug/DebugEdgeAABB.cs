@@ -1,4 +1,3 @@
-using Geo2D;
 using UnityEngine;
 
 namespace Geo3D

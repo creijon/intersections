@@ -1,7 +1,3 @@
-using Geo3D;
-using System;
-using System.Drawing;
-using TMPro;
 using UnityEngine;
 
 namespace Geo2D

@@ -12,7 +12,10 @@ namespace Geo3D
 
         void Reset()
         {
-            _edge = new Edge(_v0.transform.position, _v1.transform.position);
+            if (_v0 && _v1)
+            {
+                _edge = new Edge(_v0.transform.position, _v1.transform.position);
+            }
         }
 
         // Start is called before the first frame update

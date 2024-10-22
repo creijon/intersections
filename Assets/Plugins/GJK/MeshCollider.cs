@@ -8,10 +8,8 @@ namespace GJK
     {
         private Mesh _mesh;
 
-        protected override void Awake()
+        protected void Awake()
         {
-            base.Awake();
-
             var meshFilter = GetComponent<MeshFilter>();
             _mesh = meshFilter?.mesh;
         }

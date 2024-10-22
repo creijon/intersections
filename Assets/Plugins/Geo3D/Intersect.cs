@@ -1,8 +1,3 @@
-using Geo2D;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Drawing;
 using UnityEngine;
 
 namespace Geo3D
@@ -32,10 +27,30 @@ namespace Geo3D
             return true;
         }
 
-        public static bool Test(Edge line, AABB aabb)
+        public static bool Test(Ray ray, AABB aabb, out float t)
         {
-            var ha = line.Axis * 0.5f;
-            var cr = line.Centre - aabb._centre;
+            var invDir = Util.Reciprocal(ray._dir);
+            var rmin = Util.Multiply(aabb.Min - ray._origin, invDir);
+            var rmax = Util.Multiply(aabb.Max - ray._origin, invDir);
+            var tmax = Mathf.Min(Mathf.Min(Mathf.Max(rmin.x, rmax.x), Mathf.Max(rmin.y, rmax.y)), Mathf.Max(rmin.z, rmax.z));
+
+            t = tmax;
+
+            if (tmax < 0.0f) return false;
+
+            var tmin = Mathf.Max(Mathf.Max(Mathf.Min(rmin.x, rmax.x), Mathf.Min(rmin.y, rmax.y)), Mathf.Min(rmin.z, rmax.z));
+
+            if (tmin > tmax) return false;
+
+            t = tmin;
+
+            return true;
+        }
+
+        public static bool Test(Edge edge, AABB aabb)
+        {
+            var ha = edge.Axis * 0.5f;
+            var cr = edge.Centre - aabb._centre;
             var e = aabb._extents;
             var ahax = Mathf.Abs(ha.x);          // Exploiting symmetry
             var ahay = Mathf.Abs(ha.y);
@@ -95,22 +110,24 @@ namespace Geo3D
             return false;
         }
 
-        public static bool Test(Ray ray, AABB aabb, out float t)
+        public static bool Test(Plane plane, AABB aabb)
         {
-            var invDir = Util.Multiply(Vector3.one, ray._dir);
-            var rmin = Util.Multiply(aabb.Min - ray._origin, invDir);
-            var rmax = Util.Multiply(aabb.Max - ray._origin, invDir);
-            var tmax = Mathf.Min(Mathf.Min(Mathf.Max(rmin.x, rmax.x), Mathf.Max(rmin.y, rmax.y)), Mathf.Max(rmin.z, rmax.z));
+            var r = Vector3.Dot(aabb._extents, Util.Abs(plane._n));
+            var s = plane.SignedDistance(aabb._centre);
 
-            t = tmax;
+            return Mathf.Abs(s) <= r;
+        }
 
-            if (tmax < 0.0f) return false;
+        public static bool Test(Edge edge, Plane plane, out float t)
+        {
+            t = 0.0f;
+            var d0 = plane.SignedDistance(edge._v0);
+            var d1 = plane.SignedDistance(edge._v1);
 
-            var tmin = Mathf.Max(Mathf.Max(Mathf.Min(rmin.x, rmax.x), Mathf.Min(rmin.y, rmax.y)), Mathf.Min(rmin.z, rmax.z));
+            if (Mathf.Abs(d0 - d1) < Mathf.Epsilon) return true;
+            if (Mathf.Sign(d0) == Mathf.Sign(d1)) return false;
 
-            if (tmin > tmax) return false;
-
-            t = tmin;
+            t = d0 / (d0 - d1);
 
             return true;
         }
@@ -190,29 +207,6 @@ namespace Geo3D
             }
 
             return false;
-        }
-
-
-        public static bool Test(Plane plane, AABB aabb)
-        {
-            var r = Vector3.Dot(aabb._extents, Util.Abs(plane._n));
-            var s = plane.SignedDistance(aabb._centre);
-
-            return Mathf.Abs(s) <= r;
-        }
-
-        public static bool Test(Edge edge, Plane plane, out float t)
-        {
-            t = 0.0f;
-            var d0 = plane.SignedDistance(edge._v0);
-            var d1 = plane.SignedDistance(edge._v1);
-
-            if (Mathf.Abs(d0 - d1) < Mathf.Epsilon) return true;
-            if (Mathf.Sign(d0) == Mathf.Sign(d1)) return false;
-
-            t = d0 / (d0 - d1);
-
-            return true;
         }
     }
 }

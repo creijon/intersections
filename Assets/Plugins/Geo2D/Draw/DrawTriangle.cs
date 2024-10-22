@@ -11,11 +11,14 @@ namespace Geo2D
 
         void Reset()
         {
-            var v0 = new Vector2(_verts[0].transform.position.x, _verts[0].transform.position.y);
-            var v1 = new Vector2(_verts[1].transform.position.x, _verts[1].transform.position.y);
-            var v2 = new Vector2(_verts[2].transform.position.x, _verts[2].transform.position.y);
+            if (_verts[0] && _verts[1] && _verts[2])
+            {
+                var v0 = new Vector2(_verts[0].transform.position.x, _verts[0].transform.position.y);
+                var v1 = new Vector2(_verts[1].transform.position.x, _verts[1].transform.position.y);
+                var v2 = new Vector2(_verts[2].transform.position.x, _verts[2].transform.position.y);
 
-            _triangle = new Triangle(v0, v1, v2);
+                _triangle = new Triangle(v0, v1, v2);
+            }
         }
 
         // Start is called before the first frame update

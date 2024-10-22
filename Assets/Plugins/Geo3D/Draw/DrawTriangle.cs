@@ -11,7 +11,10 @@ namespace Geo3D
 
         void Reset()
         {
-            _triangle = new Triangle(_verts[0].transform.position, _verts[1].transform.position, _verts[2].transform.position);
+            if (_verts[0] && _verts[1] && _verts[2])
+            {
+                _triangle = new Triangle(_verts[0].transform.position, _verts[1].transform.position, _verts[2].transform.position);
+            }
         }
 
         // Start is called before the first frame update

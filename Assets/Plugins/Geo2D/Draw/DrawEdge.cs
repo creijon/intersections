@@ -12,9 +12,12 @@ namespace Geo2D
 
         void Reset()
         {
-            var p0 = new Vector2(_v0.transform.position.x, _v0.transform.position.y);
-            var p1 = new Vector2(_v1.transform.position.x, _v1.transform.position.y);
-            _edge = new Edge(p0, p1);
+            if (_v0 && _v1)
+            {
+                var p0 = new Vector2(_v0.transform.position.x, _v0.transform.position.y);
+                var p1 = new Vector2(_v1.transform.position.x, _v1.transform.position.y);
+                _edge = new Edge(p0, p1);
+            }
         }
 
         // Start is called before the first frame update

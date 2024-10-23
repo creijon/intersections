@@ -1,9 +1,11 @@
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 namespace Geo3D
 {
     public class Triangle
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Triangle(Vector3 v0, Vector3 v1, Vector3 v2)
         {
             _v0 = v0;

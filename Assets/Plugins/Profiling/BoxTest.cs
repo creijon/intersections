@@ -26,7 +26,6 @@ public class BoxTest : MonoBehaviour
     public bool _comparison = false;
     public int _randomSeed = 100;
     public int _boxCount = 1000;
-    public bool _myRoutine = true;
     Box[] _boxes;
 
     void WriteResults(string filePath)
@@ -182,7 +181,7 @@ public class BoxTest : MonoBehaviour
         if (_firstFrame)
         {
             _firstFrame = false;
-            if (_myRoutine)
+            if (_mySolution)
             {
                 WriteResults("C:\\Users\\joncr\\triangleAABB_Mine.txt");
             }

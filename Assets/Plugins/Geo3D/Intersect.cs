@@ -30,16 +30,13 @@ namespace Geo3D
         public static bool Test(Ray ray, AABB aabb, out float t)
         {
             var invDir = Util.Reciprocal(ray._dir);
-            var rmin = Util.Multiply(aabb.Min - ray._origin, invDir);
-            var rmax = Util.Multiply(aabb.Max - ray._origin, invDir);
-            var tmax = Mathf.Min(Mathf.Min(Mathf.Max(rmin.x, rmax.x), Mathf.Max(rmin.y, rmax.y)), Mathf.Max(rmin.z, rmax.z));
-
+            var rmin = Vector3.Scale(aabb.Min - ray._origin, invDir);
+            var rmax = Vector3.Scale(aabb.Max - ray._origin, invDir);
+            var tmax = Util.MinCoefficient(Vector3.Max(rmin, rmax));
             t = tmax;
-
             if (tmax < 0.0f) return false;
 
-            var tmin = Mathf.Max(Mathf.Max(Mathf.Min(rmin.x, rmax.x), Mathf.Min(rmin.y, rmax.y)), Mathf.Min(rmin.z, rmax.z));
-
+            var tmin = Util.MaxCoefficient(Vector3.Min(rmin, rmax));
             if (tmin > tmax) return false;
 
             t = tmin;

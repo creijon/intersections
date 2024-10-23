@@ -24,7 +24,6 @@ namespace Geo2D
 
             return true;
         }
-
         public static bool Test(Edge edge, Rect rect)
         {
             var cr = edge.Centre - rect._centre;
@@ -39,7 +38,6 @@ namespace Geo2D
 
             return true;
         }
-
         public static bool Test(Vector2 p, Triangle tri)
         {
             var s = (tri._v0.x - tri._v2.x) * (p.y - tri._v2.y) - (tri._v0.y - tri._v2.y) * (p.x - tri._v2.x);
@@ -49,7 +47,6 @@ namespace Geo2D
             var d = (tri._v2.x - tri._v1.x) * (p.y - tri._v1.y) - (tri._v2.y - tri._v1.y) * (p.x - tri._v1.x);
             return d == 0 || (d < 0) == (s + t <= 0);
         }
-
         public static bool Test(Triangle tri, Rect rect)
         {
             // If any of the edges intersect then the tri intersects.

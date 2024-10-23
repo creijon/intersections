@@ -1,9 +1,11 @@
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 namespace Geo3D
 {
     public class AABB
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public AABB(Vector3 centre, Vector3 extents)
         {
             _centre = centre;
@@ -12,6 +14,7 @@ namespace Geo3D
 
         // By adding an unused bool to the constructor we initialise from a min and max value.
         // Validity not checked, but it doesn't matter since extents can be negative.
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public AABB(Vector3 min, Vector3 max, bool minMax)
         {
             SetMinMax(min, max);
@@ -19,16 +22,21 @@ namespace Geo3D
 
         public Vector3 Min
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return _centre - _extents; }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { SetMinMax(value, Max); }
         }
 
         public Vector3 Max
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return _centre + _extents; }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { SetMinMax(Min, value); }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void SetMinMax(Vector3 min, Vector3 max)
         {
             _extents = (max - min) * 0.5f;

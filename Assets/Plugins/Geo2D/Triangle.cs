@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 namespace Geo2D
@@ -5,6 +6,7 @@ namespace Geo2D
     // A tri lying on the XY plane.
     public class Triangle
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Triangle(Vector2 v0, Vector2 v1, Vector2 v2)
         {
             _v0 = v0;

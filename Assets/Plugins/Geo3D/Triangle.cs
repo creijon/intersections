@@ -29,9 +29,9 @@ namespace Geo3D
         public Vector3 Cross()
         {
             var edge0 = _v1 - _v0;
-            var edge1 = _v2 - _v1;
+            var edge1 = _v1 - _v2;
 
-            return Vector3.Cross(edge0, -edge1);
+            return Vector3.Cross(edge0, edge1);
         }
 
         public Vector3 CalcNormal()

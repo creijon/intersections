@@ -341,7 +341,7 @@ Transform:
   m_GameObject: {fileID: 674308836}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.353, y: 1.396, z: 0}
+  m_LocalPosition: {x: -2.09, y: 0.06, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -535,7 +535,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 76d64136b23557a42a1ca01d5f1ca499, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _color: {r: 0, g: 1, b: 0, a: 1}
+  _color: {r: 1, g: 0, b: 0, a: 1}
 --- !u!4 &836168529
 Transform:
   m_ObjectHideFlags: 0
@@ -545,7 +545,7 @@ Transform:
   m_GameObject: {fileID: 836168527}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.738, z: 0}
+  m_LocalPosition: {x: 0.82, y: 0.34, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -845,7 +845,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e1b443c6062318f4db684c80d244848b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _triangle: {fileID: 438827433}
+  _tri: {fileID: 438827433}
   _aabb: {fileID: 1443081067}
 --- !u!4 &1588531881
 Transform:
@@ -874,7 +874,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4ff3ff85fee1ae4daf79c5a9f4ee108, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _triangle: {fileID: 438827433}
+  _tri: {fileID: 438827433}
   _ray: {fileID: 1169138032}
 --- !u!114 &1588531883
 MonoBehaviour:
@@ -903,7 +903,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _edge: {fileID: 1441595882}
-  _triangle: {fileID: 438827433}
+  _tri: {fileID: 438827433}
 --- !u!114 &1588531885
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -916,7 +916,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c154824fd587eb409f414468f7dd2e7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _triangle: {fileID: 674308837}
+  _tri: {fileID: 674308837}
   _rect: {fileID: 836168528}
 --- !u!1 &1668338350
 GameObject:

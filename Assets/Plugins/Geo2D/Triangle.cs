@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Geo2D
 {
-    // A triangle lying on the XY plane.
+    // A tri lying on the XY plane.
     public class Triangle
     {
         public Triangle(Vector2 v0, Vector2 v1, Vector2 v2)
@@ -12,20 +12,9 @@ namespace Geo2D
             _v2 = v2;
         }
 
-        public Edge Edge0
-        {
-            get { return new Edge(_v0, _v1); }
-        }
-
-        public Edge Edge1
-        {
-            get { return new Edge(_v1, _v2); }
-        }
-
-        public Edge Edge2
-        {
-            get { return new Edge(_v2, _v0); }
-        }
+        public Edge Edge0 => new Edge(_v0, _v1);
+        public Edge Edge1 => new Edge(_v1, _v2);
+        public Edge Edge2 => new Edge(_v2, _v0);
 
         public Vector2 CalcBarycentric(Vector2 p)
         {

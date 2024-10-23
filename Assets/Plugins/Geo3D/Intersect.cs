@@ -68,11 +68,11 @@ namespace Geo3D
 
         // Adapted from Moller-Trumbore solution:
         // https://en.wikipedia.org/wiki/M%C3%B6ller%E2%80%93Trumbore_intersection_algorithm
-        public static bool Test(Ray ray, Triangle triangle, out float t)
+        public static bool Test(Ray ray, Triangle tri, out float t)
         {
-            var t0 = triangle._v0;
-            var t1 = triangle._v1;
-            var t2 = triangle._v2;
+            var t0 = tri._v0;
+            var t1 = tri._v1;
+            var t2 = tri._v2;
             var e1 = t1 - t0;
             var e2 = t2 - t0;
             var P = Vector3.Cross(ray._dir, e2);
@@ -96,18 +96,44 @@ namespace Geo3D
             return false;
         }
 
-        public static bool Test(Edge edge, Triangle triangle, out float t)
+        public static bool Test(Edge edge, Triangle tri, out float t)
         {
             var d = edge.Axis;
             var ld = d.magnitude;
             var dir = d / ld;
             
-            if (Test(new Ray(edge._v0, dir), triangle, out t))
+            if (Test(new Ray(edge._v0, dir), tri, out t))
             {
                 if (t <= ld) return true;
             }
 
             return false;
+        }
+
+        public static bool Test(Vector3 p, Triangle tri)
+        {
+            Vector3 e1 = tri._v2 - tri._v0;
+            Vector3 e0 = tri._v1 - tri._v0;
+            Vector3 eP = p - tri._v0;
+
+            float dot01 = Vector3.Dot(e0, e1);
+            float dot0P = Vector3.Dot(e0, eP);
+            float dot11 = Vector3.Dot(e1, e1);
+            float dot1P = Vector3.Dot(e1, eP);
+
+            // Test edge1
+            float u = dot11 * dot0P - dot01 * dot1P;
+            if (u < 0.0f) return false;
+
+            // Test edge0
+            float dot00 = Vector3.Dot(e0, e0);
+            float v = dot00 * dot1P - dot01 * dot0P;
+            if (v < 0.0f) return false;
+
+            float denom = dot00 * dot11 - dot01 * dot01;
+            if (denom < u + v) return false;
+
+            return true;
         }
 
         public static bool Test(Plane plane, AABB aabb)
@@ -134,14 +160,14 @@ namespace Geo3D
 
         // Adapted from Schwarz-Seidel triangle-box intersection:
         // https://michael-schwarz.com/research/publ/2010/vox/
-        public static bool Test(Triangle triangle, AABB aabb)
+        public static bool Test(Triangle tri, AABB aabb)
         {
-            if (!Test(triangle.CalcBounds(), aabb)) return false;
-            if (!Test(triangle.CalcPlane(), aabb)) return false;
+            if (!Test(tri.CalcBounds(), aabb)) return false;
+            if (!Test(tri.CalcPlane(), aabb)) return false;
 
-            if (!Geo2D.Intersect.Test(triangle.XY, aabb.XY)) return false;
-            if (!Geo2D.Intersect.Test(triangle.YZ, aabb.YZ)) return false;
-            if (!Geo2D.Intersect.Test(triangle.ZX, aabb.ZX)) return false;
+            if (!Geo2D.Intersect.Test(tri.XY, aabb.XY)) return false;
+            if (!Geo2D.Intersect.Test(tri.YZ, aabb.YZ)) return false;
+            if (!Geo2D.Intersect.Test(tri.ZX, aabb.ZX)) return false;
 
             return true;
         }
@@ -151,18 +177,18 @@ namespace Geo3D
         // positive intersections early and returning.  SAT solutions only exit early on disjoint
         // cases.  This means that in situations where there are many intersecting triangles it 
         // will be significantly faster than the Schwarz-Seidel.
-        public static bool Test2(Triangle triangle, AABB aabb)
+        public static bool Test2(Triangle tri, AABB aabb)
         {
             // Early out if the AABB of the triangle is disjoint with the AABB.
-            if (!Test(triangle.CalcBounds(), aabb)) return false;
+            if (!Test(tri.CalcBounds(), aabb)) return false;
 
             // Test three triangle edges against box.
-            if (Test(triangle.Edge0, aabb)) return true;
-            if (Test(triangle.Edge1, aabb)) return true;
-            if (Test(triangle.Edge2, aabb)) return true;
+            if (Test(tri.Edge0, aabb)) return true;
+            if (Test(tri.Edge1, aabb)) return true;
+            if (Test(tri.Edge2, aabb)) return true;
 
             // If none of the edges of a degenerate triangle intersect then don't test any further.
-            var n = triangle.Cross();
+            var n = tri.Cross();
             if (n.sqrMagnitude < Mathf.Epsilon) return false;
             
             // Test the four internal diagonals of the box against the triangle.
@@ -174,7 +200,7 @@ namespace Geo3D
             var axis0 = max - min;
             var invLength = 1.0f / axis0.magnitude;
 
-            if (Test(new Ray(min, axis0 * invLength), triangle, out t))
+            if (Test(new Ray(min, axis0 * invLength), tri, out t))
             {
                 if (t * invLength <= 1.0f) return true;
             }
@@ -183,7 +209,7 @@ namespace Geo3D
             var i1b = new Vector3(min.x, max.y, max.z);
             var axis1 = i1b - i1a;
 
-            if (Test(new Ray(i1a, axis1 * invLength), triangle, out t))
+            if (Test(new Ray(i1a, axis1 * invLength), tri, out t))
             {
                 if (t * invLength <= 1.0f) return true;
             }
@@ -192,7 +218,7 @@ namespace Geo3D
             var i2b = new Vector3(max.x, min.y, max.z);
             var axis2 = i2b - i2a;
 
-            if (Test(new Ray(i2a, axis2 * invLength), triangle, out t))
+            if (Test(new Ray(i2a, axis2 * invLength), tri, out t))
             {
                 if (t * invLength <= 1.0f) return true;
             }
@@ -201,7 +227,7 @@ namespace Geo3D
             var i3b = new Vector3(min.x, min.y, max.z);
             var axis3 = i3b - i3a;
 
-            if (Test(new Ray(i3a, axis3 * invLength), triangle, out t))
+            if (Test(new Ray(i3a, axis3 * invLength), tri, out t))
             {
                 if (t * invLength <= 1.0f) return true;
             }

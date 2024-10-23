@@ -5,7 +5,7 @@ namespace Geo2D
     [ExecuteInEditMode]
     public class DebugTriangleRect : MonoBehaviour
     {
-        public DrawTriangle _triangle;
+        public DrawTriangle _tri;
         public DrawRect _rect;
 
         // Start is called before the first frame update
@@ -17,11 +17,11 @@ namespace Geo2D
         // Update is called once per frame
         void Update()
         {
-            if (!_rect || !_triangle) return;
+            if (!_rect || !_tri) return;
 
             Color color = new Color(1.0f, 1.0f, 0.0f);
 
-            if (Intersect.Test(_triangle._triangle, _rect._rect))
+            if (Intersect.Test(_tri._tri, _rect._rect))
             {
                 _rect._color = Color.green;
             }

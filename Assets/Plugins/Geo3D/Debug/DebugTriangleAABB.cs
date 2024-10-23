@@ -5,7 +5,7 @@ namespace Geo3D
     [ExecuteInEditMode]
     public class DebugTriangleAABB : MonoBehaviour
     {
-        public DrawTriangle _triangle;
+        public DrawTriangle _tri;
         public DrawAABB _aabb;
 
         // Start is called before the first frame update
@@ -17,11 +17,11 @@ namespace Geo3D
         // Update is called once per frame
         void Update()
         {
-            if (!_aabb || !_triangle) return;
+            if (!_aabb || !_tri) return;
 
             Color color = new Color(1.0f, 1.0f, 0.0f);
 
-            if (Intersect.Test2(_triangle._triangle, _aabb._aabb))
+            if (Intersect.Test2(_tri._tri, _aabb._aabb))
             {
                 _aabb._color = Color.green;
             }

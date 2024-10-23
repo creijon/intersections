@@ -7,13 +7,13 @@ namespace Geo3D
     {
         public GameObject[] _verts = new GameObject[3];
         public Color _color;
-        public Triangle _triangle;
+        public Triangle _tri;
 
         void Reset()
         {
             if (_verts[0] && _verts[1] && _verts[2])
             {
-                _triangle = new Triangle(_verts[0].transform.position, _verts[1].transform.position, _verts[2].transform.position);
+                _tri = new Triangle(_verts[0].transform.position, _verts[1].transform.position, _verts[2].transform.position);
             }
         }
 
@@ -34,9 +34,9 @@ namespace Geo3D
         void Update()
         {
             Reset();
-            Debug.DrawLine(_triangle._v0, _triangle._v1, _color);
-            Debug.DrawLine(_triangle._v1, _triangle._v2, _color);
-            Debug.DrawLine(_triangle._v2, _triangle._v0, _color);
+            Debug.DrawLine(_tri._v0, _tri._v1, _color);
+            Debug.DrawLine(_tri._v1, _tri._v2, _color);
+            Debug.DrawLine(_tri._v2, _tri._v0, _color);
         }
     }
 }

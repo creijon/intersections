@@ -11,11 +11,11 @@ public class BoxTest : MonoBehaviour
         public Box(Vector3 min, Vector3 max)
         {
             _aabb = new AABB(min, max, true);
-            _triangleCount = 0;
+            _triCount = 0;
         }
 
         public AABB _aabb;
-        public uint _triangleCount;
+        public uint _triCount;
     }
 
     Mesh _mesh;
@@ -37,7 +37,7 @@ public class BoxTest : MonoBehaviour
         // Now output the results to terminal.
         for (int i = 0; i < _boxCount; ++i)
         {
-            writer.WriteLine(i + "\t" + _boxes[i]._triangleCount);
+            writer.WriteLine(i + "\t" + _boxes[i]._triCount);
         }
 
         writer.Close();
@@ -157,11 +157,11 @@ public class BoxTest : MonoBehaviour
 
                 if (test1)
                 {
-                    _boxes[i]._triangleCount += 1;
+                    _boxes[i]._triCount += 1;
                 }
             }
 
-            totalIntersections += _boxes[i]._triangleCount;
+            totalIntersections += _boxes[i]._triCount;
         }
 
         stopWatch.Stop();

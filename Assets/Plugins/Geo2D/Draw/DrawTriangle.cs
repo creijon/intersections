@@ -7,7 +7,7 @@ namespace Geo2D
     {
         public GameObject[] _verts = new GameObject[3];
         public Color _color;
-        public Triangle _triangle;
+        public Triangle _tri;
 
         void Reset()
         {
@@ -17,7 +17,7 @@ namespace Geo2D
                 var v1 = new Vector2(_verts[1].transform.position.x, _verts[1].transform.position.y);
                 var v2 = new Vector2(_verts[2].transform.position.x, _verts[2].transform.position.y);
 
-                _triangle = new Triangle(v0, v1, v2);
+                _tri = new Triangle(v0, v1, v2);
             }
         }
 
@@ -39,9 +39,9 @@ namespace Geo2D
         {
             Reset();
 
-            Debug.DrawLine(_triangle._v0, _triangle._v1, _color);
-            Debug.DrawLine(_triangle._v1, _triangle._v2, _color);
-            Debug.DrawLine(_triangle._v2, _triangle._v0, _color);
+            Debug.DrawLine(_tri._v0, _tri._v1, _color);
+            Debug.DrawLine(_tri._v1, _tri._v2, _color);
+            Debug.DrawLine(_tri._v2, _tri._v0, _color);
         }
     }
 }

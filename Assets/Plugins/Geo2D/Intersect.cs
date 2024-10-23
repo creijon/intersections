@@ -42,29 +42,23 @@ namespace Geo2D
 
         public static bool Test(Vector2 p, Triangle tri)
         {
-            var e0 = tri._v1 - tri._v0;
-            var e2 = tri._v0 - tri._v2;
-            var r0 = p - tri._v0;
-            var r2 = p - tri._v2;
-            var s = e2.x * r2.y - e2.y * r2.x;
-            var t = e0.x * r0.y - e0.y * r0.x;
-            if ((s < 0.0f) != (t < 0.0f) && s != 0.0f && t != 0.0f) return false;
+            var s = (tri._v0.x - tri._v2.x) * (p.y - tri._v2.y) - (tri._v0.y - tri._v2.y) * (p.x - tri._v2.x);
+            var t = (tri._v1.x - tri._v0.x) * (p.y - tri._v0.y) - (tri._v1.y - tri._v0.y) * (p.x - tri._v0.x);
+            if ((s < 0) != (t < 0) && s != 0 && t != 0) return false;
 
-            var e1 = tri._v2 - tri._v1;
-            var r1 = p - tri._v1;
-            var d = e1.y * r1.x - e1.y * r1.x;
-            return (d == 0.0f) || ((d < 0.0f) == (s + t <= 0.0f));
+            var d = (tri._v2.x - tri._v1.x) * (p.y - tri._v1.y) - (tri._v2.y - tri._v1.y) * (p.x - tri._v1.x);
+            return d == 0 || (d < 0) == (s + t <= 0);
         }
 
-        public static bool Test(Triangle triangle, Rect rect)
+        public static bool Test(Triangle tri, Rect rect)
         {
-            // If any of the edges intersect then the triangle intersects.
-            if (Test(triangle.Edge0, rect)) return true;
-            if (Test(triangle.Edge1, rect)) return true;
-            if (Test(triangle.Edge2, rect)) return true;
+            // If any of the edges intersect then the tri intersects.
+            if (Test(tri.Edge0, rect)) return true;
+            if (Test(tri.Edge1, rect)) return true;
+            if (Test(tri.Edge2, rect)) return true;
 
-            // If centre of the box is inside the triangle then it intersects.
-            if (Test(rect._centre, triangle)) return true;
+            // If centre of the box is inside the tri then it intersects.
+            if (Test(rect._centre, tri)) return true;
 
             return false;
         }

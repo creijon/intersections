@@ -1,6 +1,6 @@
 ## Intersections
 
-This is a small Unity project that implements a set of 2D and 3D interesection tests from simple point-in-box to more complex triangle-AABB tests.  The more complex tests are built up by reusing the solutions for the simple tests where possible.
+This is a small Unity project that implements a set of 2D and 3D interesection tests from simple point-in-box to more complex triangle-AABB tests.  The more complex tests are built up by reusing the solutions for the simple tests where possible, I think this helps to make them more understandable.
 
 2D:
 

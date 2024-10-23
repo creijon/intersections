@@ -18,7 +18,7 @@ This is a small Unity project that implements a set of 2D and 3D interesection t
 - edge : aabb
 - ray : triangle
 - edge : triangle
-- triangle : aabb
+- triangle : aabb (see below)
 - plane : aabb
 - edge : plane
 
@@ -28,7 +28,7 @@ I've included implementations of some of the standard algorithms, such as the Sc
 
 ### Triangle:AABB Intersection Test
 
-In addition I've implemented a new triangle:AABB solution which takes a different approach to the Schwarz-Seidel test.  It is broken into three stages:
+In addition I've implemented a new triangle:AABB solution which takes a different approach to the Schwarz-Seidel test.  It has three stages:
 
 1. Check for intersection between the AABB and the bounds of the triangle.  Exit early if disjoint.
 2. Test each of the three triangle edges against the AABB.  Exit early with an intersection.
@@ -38,4 +38,4 @@ The Schwarz-Seidel algorithm can only exit early in situations where the shapes 
 
 This means that it is significantly more efficient if the domain is mostly made up of intersecting shapes.  This is often the case when performing a series of hierarchial tests such as with the generation of Sparse Voxel Octrees from triangle meshes.
 
-If the domain contains a significant number of disjoint shape queries then performance of the two solutions is very similar, since the early bounding box check filters out a large proportion of the cases.
+If the domain contains a significant number of disjoint shape queries then performance of the two solutions is very similar, since the bounding box check is very effective in filtering these out early.

@@ -21,7 +21,6 @@ public class BoxTest : MonoBehaviour
     Mesh _mesh;
     Vector3 _min;
     Vector3 _max;
-    bool _firstFrame = true;
     public bool _mySolution = false;
     public bool _comparison = false;
     public int _randomSeed = 100;
@@ -67,7 +66,6 @@ public class BoxTest : MonoBehaviour
 
         _min = vertices[0];
         _max = vertices[0];
-        _firstFrame = true;
         _boxes = new Box[_boxCount];
 
         foreach (var vert in vertices)
@@ -178,17 +176,5 @@ public class BoxTest : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (_firstFrame)
-        {
-            _firstFrame = false;
-            if (_mySolution)
-            {
-                WriteResults("C:\\Users\\joncr\\triangleAABB_Mine.txt");
-            }
-            else
-            {
-                WriteResults("C:\\Users\\joncr\\triangleAABB_Canonical.txt");
-            }
-        }
     }
 }

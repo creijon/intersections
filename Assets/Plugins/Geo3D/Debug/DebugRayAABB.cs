@@ -28,7 +28,7 @@ namespace Geo3D
             {
                 _ray._color = Color.green;
                 Vector3 hitPos = _ray._ray.CalcPos(t);
-                DrawAABB.DebugDraw(-Vector3.one * 0.01f, Vector3.one * 0.01f, Color.green, hitPos);
+                DrawAABB.DebugDraw(-Vector3.one * 0.01f + hitPos, Vector3.one * 0.01f + hitPos, Color.green, Matrix4x4.identity);
             }
             else
             {

@@ -24,6 +24,7 @@ namespace Geo2D
 
             return true;
         }
+
         public static bool Test(Edge edge, Rect rect)
         {
             var cr = edge.Centre - rect._centre;
@@ -38,6 +39,35 @@ namespace Geo2D
 
             return true;
         }
+
+        // From Real-Time Collision Detection by Christer Ericson
+        // Published by Morgan Kaufmaan Publishers
+        // © 2005 Elvesier Inc
+        public static bool Test(Edge a, Edge b, out float t)
+        {
+            t = 0.0f;
+            float a1 = Util.SignedTriArea(a._v0, a._v1, b._v1);
+            float a2 = Util.SignedTriArea(a._v0, a._v1, b._v0);
+
+            if (a1 * a2 < 0.0f)
+            {
+                float a3 = Util.SignedTriArea(b._v0, b._v1, a._v0);
+                // Since area is constant a1 - a2 = a3 - a4, or a4 = a3 + a2 - a1
+                float a4 = a3 + a2 - a1;
+
+                // Points a and b on different sides of cd if areas have different signs
+                if (a3 * a4 < 0.0f)
+                {
+                    // Segments intersect. Find intersection point along L(t) = a + t * (b - a).
+                    t = a3 / (a3 - a4);
+                    return true;
+                }
+            }
+
+            // Segments not intersecting or colinear
+            return false;
+        }
+
         public static bool Test(Vector2 p, Triangle tri)
         {
             var s = (tri._v0.x - tri._v2.x) * (p.y - tri._v2.y) - (tri._v0.y - tri._v2.y) * (p.x - tri._v2.x);
@@ -47,6 +77,7 @@ namespace Geo2D
             var d = (tri._v2.x - tri._v1.x) * (p.y - tri._v1.y) - (tri._v2.y - tri._v1.y) * (p.x - tri._v1.x);
             return d == 0 || (d < 0) == (s + t <= 0);
         }
+
         public static bool Test(Triangle tri, Rect rect)
         {
             // If any of the edges intersect then the tri intersects.

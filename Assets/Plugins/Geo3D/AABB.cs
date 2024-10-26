@@ -36,11 +36,22 @@ namespace Geo3D
             set { SetMinMax(Min, value); }
         }
 
+        public Vector3 Size
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get { return _extents * 2.0f; }
+        }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void SetMinMax(Vector3 min, Vector3 max)
         {
             _extents = (max - min) * 0.5f;
             _centre = min + _extents;
+        }
+
+        public void Include(Vector3 p)
+        {
+            SetMinMax(Vector3.Min(p, Min), Vector3.Max(p, Max));
         }
 
         public Geo2D.Rect XY => new Geo2D.Rect(Util.XY(_centre), Util.XY(_extents));

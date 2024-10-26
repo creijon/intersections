@@ -17,5 +17,15 @@ namespace Geo2D
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 Abs(Vector2 v) => new Vector2(Mathf.Abs(v.x), Mathf.Abs(v.y));
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float MaxCoefficient(Vector2 v)
+        {
+            return (v.x > v.y) ? v.x : v.y;
+        }
+
+        public static float SignedTriArea(Vector2 a, Vector2 b, Vector2 c)
+        {
+            return (a.x - c.x) * (b.y - c.y) - (a.y - c.y) * (b.x - c.x);
+        }
     }
 }

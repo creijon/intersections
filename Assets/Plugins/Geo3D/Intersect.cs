@@ -155,11 +155,18 @@ namespace Geo3D
             return true;
         }
 
-        // Adapted from Schwarz-Seidel triangle-box intersection:
-        // https://michael-schwarz.com/research/publ/2010/vox/
         public static bool Test(Triangle tri, AABB aabb)
         {
+            // Early out if the AABB of the triangle is disjoint with the AABB.
             if (!Test(tri.CalcBounds(), aabb)) return false;
+
+            return TestNoBB(tri, aabb);
+        }
+
+        // Adapted from Schwarz-Seidel triangle-box intersection:
+        // https://michael-schwarz.com/research/publ/2010/vox/
+        public static bool TestSS(Triangle tri, AABB aabb)
+        {
             if (!Test(tri.CalcPlane(), aabb)) return false;
 
             if (!Geo2D.Intersect.Test(tri.XY, aabb.XY)) return false;
@@ -169,16 +176,8 @@ namespace Geo3D
             return true;
         }
 
-        // This is my alternative approach to the triangle-AABB test.
-        // It differs from SAT-derived solutions such as the Schwarz-Seidel algo above by finding
-        // positive intersections early and returning.  SAT solutions only exit early on disjoint
-        // cases.  This means that in situations where there are many intersecting triangles it 
-        // will be significantly faster than the Schwarz-Seidel.
-        public static bool Test2(Triangle tri, AABB aabb)
+        public static bool TestNoBB(Triangle tri, AABB aabb)
         {
-            // Early out if the AABB of the triangle is disjoint with the AABB.
-            if (!Test(tri.CalcBounds(), aabb)) return false;
-
             // Test three triangle edges against box.
             if (Test(tri.Edge0, aabb)) return true;
             if (Test(tri.Edge1, aabb)) return true;

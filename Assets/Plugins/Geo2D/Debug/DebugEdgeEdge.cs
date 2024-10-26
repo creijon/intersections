@@ -1,33 +1,33 @@
 using UnityEngine;
 
-namespace Geo3D
+namespace Geo2D
 {
     [ExecuteInEditMode]
-    public class DebugTriangleAABB : MonoBehaviour
+    public class DebugEdgeEdge : MonoBehaviour
     {
-        public DrawTriangle _tri;
-        public DrawAABB _aabb;
+        public DrawEdge _edge0;
+        public DrawEdge _edge1;
 
         // Start is called before the first frame update
         void Start()
         {
-
         }
 
         // Update is called once per frame
         void Update()
         {
-            if (!_aabb || !_tri) return;
+            if (!_edge0 || !_edge1) return;
 
             Color color = new Color(1.0f, 1.0f, 0.0f);
+            float t;
 
-            if (Intersect.Test(_tri._tri, _aabb._aabb))
+            if (Intersect.Test(_edge0._edge, _edge1._edge, out t))
             {
-                _aabb._color = Color.green;
+                _edge0._color = Color.green;
             }
             else
             {
-                _aabb._color = Color.red;
+                _edge0._color = Color.red;
             }
         }
     }

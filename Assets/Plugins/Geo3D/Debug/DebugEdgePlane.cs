@@ -27,9 +27,9 @@ namespace Geo3D
             if (Intersect.Test(_edge._edge, plane, out t))
             {
                 _edge._color = Color.green;
-                Vector3 intersection = Vector3.Lerp(_edge._edge._v0, _edge._edge._v1, t);
+                Vector3 intersection = Vector3.Lerp(_edge._edge.v0, _edge._edge.v1, t);
 
-                Debug.DrawLine(intersection, intersection + plane._n, _edge._color);
+                Debug.DrawLine(intersection, intersection + plane.n, _edge._color);
             }
             else
             {

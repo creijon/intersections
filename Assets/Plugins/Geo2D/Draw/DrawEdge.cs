@@ -32,7 +32,7 @@ namespace Geo2D
         void Update()
         {
             Reset();
-            Debug.DrawLine(_edge._v0, _edge._v1, _color);
+            Debug.DrawLine(_edge.v0, _edge.v1, _color);
         }
     }
 }

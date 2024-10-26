@@ -6,19 +6,19 @@ namespace Geo3D
     {
         public static bool Test(Vector3 p, AABB aabb)
         {
-            var cr = p - aabb._centre;
+            var cr = p - aabb.centre;
 
-            if (Mathf.Abs(cr.x) > aabb._extents.x) return false;
-            if (Mathf.Abs(cr.y) > aabb._extents.y) return false;
-            if (Mathf.Abs(cr.z) > aabb._extents.z) return false;
+            if (Mathf.Abs(cr.x) > aabb.extents.x) return false;
+            if (Mathf.Abs(cr.y) > aabb.extents.y) return false;
+            if (Mathf.Abs(cr.z) > aabb.extents.z) return false;
 
             return true;
         }
 
         public static bool Test(AABB aabb1, AABB aabb2)
         {
-            var cr = aabb1._centre - aabb2._centre;
-            var e = aabb1._extents + aabb2._extents;
+            var cr = aabb1.centre - aabb2.centre;
+            var e = aabb1.extents + aabb2.extents;
 
             if (Mathf.Abs(cr.x) > e.x) return false;
             if (Mathf.Abs(cr.y) > e.y) return false;
@@ -29,9 +29,9 @@ namespace Geo3D
 
         public static bool Test(Ray ray, AABB aabb, out float t)
         {
-            var invDir = Util.Reciprocal(ray._dir);
-            var rmin = Vector3.Scale(aabb.Min - ray._origin, invDir);
-            var rmax = Vector3.Scale(aabb.Max - ray._origin, invDir);
+            var invDir = Util.Reciprocal(ray.dir);
+            var rmin = Vector3.Scale(aabb.Min - ray.origin, invDir);
+            var rmax = Vector3.Scale(aabb.Max - ray.origin, invDir);
             var tmax = Util.MinCoefficient(Vector3.Max(rmin, rmax));
             t = tmax;
             if (tmax < 0.0f) return false;
@@ -47,8 +47,8 @@ namespace Geo3D
         public static bool Test(Edge edge, AABB aabb)
         {
             var ha = edge.Axis * 0.5f;
-            var cr = edge.Centre - aabb._centre;
-            var e = aabb._extents;
+            var cr = edge.Centre - aabb.centre;
+            var e = aabb.extents;
             var ahax = Mathf.Abs(ha.x);          // Exploiting symmetry
             var ahay = Mathf.Abs(ha.y);
             var ahaz = Mathf.Abs(ha.z);
@@ -67,24 +67,24 @@ namespace Geo3D
         // https://en.wikipedia.org/wiki/M%C3%B6ller%E2%80%93Trumbore_intersection_algorithm
         public static bool Test(Ray ray, Triangle tri, out float t)
         {
-            var t0 = tri._v0;
-            var t1 = tri._v1;
-            var t2 = tri._v2;
+            var t0 = tri.v0;
+            var t1 = tri.v1;
+            var t2 = tri.v2;
             var e1 = t1 - t0;
             var e2 = t2 - t0;
-            var P = Vector3.Cross(ray._dir, e2);
+            var P = Vector3.Cross(ray.dir, e2);
             var det = Vector3.Dot(e1, P);
             t = 0.0f;
 
             if (det > -Mathf.Epsilon && det < Mathf.Epsilon) return false;
 
             float invDet = 1.0f / det;
-            var T = ray._origin - t0;
+            var T = ray.origin - t0;
             var u = Vector3.Dot(T, P) * invDet;
             if (u < 0.0f || u > 1.0f) return false;
 
             var Q = Vector3.Cross(T, e1);
-            var v = Vector3.Dot(ray._dir, Q * invDet);
+            var v = Vector3.Dot(ray.dir, Q * invDet);
             if (v < 0.0f || u + v > 1.0f) return false;
 
             t = Vector3.Dot(e2, Q) * invDet;
@@ -99,7 +99,7 @@ namespace Geo3D
             var ld = d.magnitude;
             var dir = d / ld;
             
-            if (Test(new Ray(edge._v0, dir), tri, out t))
+            if (Test(new Ray(edge.v0, dir), tri, out t))
             {
                 if (t <= ld) return true;
             }
@@ -109,9 +109,9 @@ namespace Geo3D
 
         public static bool Test(Vector3 p, Triangle tri)
         {
-            Vector3 e1 = tri._v2 - tri._v0;
-            Vector3 e0 = tri._v1 - tri._v0;
-            Vector3 eP = p - tri._v0;
+            Vector3 e1 = tri.v2 - tri.v0;
+            Vector3 e0 = tri.v1 - tri.v0;
+            Vector3 eP = p - tri.v0;
 
             float dot01 = Vector3.Dot(e0, e1);
             float dot0P = Vector3.Dot(e0, eP);
@@ -135,8 +135,8 @@ namespace Geo3D
 
         public static bool Test(Plane plane, AABB aabb)
         {
-            var r = Vector3.Dot(aabb._extents, Util.Abs(plane._n));
-            var s = plane.SignedDistance(aabb._centre);
+            var r = Vector3.Dot(aabb.extents, Util.Abs(plane.n));
+            var s = plane.SignedDistance(aabb.centre);
 
             return Mathf.Abs(s) <= r;
         }
@@ -144,8 +144,8 @@ namespace Geo3D
         public static bool Test(Edge edge, Plane plane, out float t)
         {
             t = 0.0f;
-            var d0 = plane.SignedDistance(edge._v0);
-            var d1 = plane.SignedDistance(edge._v1);
+            var d0 = plane.SignedDistance(edge.v0);
+            var d1 = plane.SignedDistance(edge.v1);
 
             if (Mathf.Abs(d0 - d1) < Mathf.Epsilon) return true;
             if (Mathf.Sign(d0) == Mathf.Sign(d1)) return false;

@@ -9,8 +9,8 @@ namespace Geo2D
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Edge(Vector2 v0, Vector2 v1)
         {
-            _v0 = v0;
-            _v1 = v1;
+            this.v0 = v0;
+            this.v1 = v1;
         }
 
         public Vector2 CalcDirection()
@@ -21,16 +21,16 @@ namespace Geo2D
         public Vector2 Axis
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return _v1 - _v0; }
+            get { return v1 - v0; }
         }
 
         public Vector2 Centre
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return _v0 + Axis * 0.5f; }
+            get { return v0 + Axis * 0.5f; }
         }
 
-        public Vector2 _v0;
-        public Vector2 _v1;
+        public Vector2 v0;
+        public Vector2 v1;
     }
 }

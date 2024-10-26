@@ -8,17 +8,17 @@ namespace Geo3D
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Ray(Vector3 origin, Vector3 dir)
         {
-            _origin = origin;
-            _dir = dir;
+            this.origin = origin;
+            this.dir = dir;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Vector3 CalcPos(float t)
         {
-            return _origin + _dir * t;
+            return origin + dir * t;
         }
 
-        public Vector3 _origin;
-        public Vector3 _dir;
+        public Vector3 origin;
+        public Vector3 dir;
     }
 }

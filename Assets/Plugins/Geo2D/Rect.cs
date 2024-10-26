@@ -11,8 +11,8 @@ namespace Geo2D
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Rect(Vector2 centre, Vector2 extents)
         {
-            _centre = centre;
-            _extents = extents;
+            this.centre = centre;
+            this.extents = extents;
         }
 
         // By adding an unused bool to the constructor we initialise from a min and max value.
@@ -26,7 +26,7 @@ namespace Geo2D
         public Vector2 Min
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return _centre - _extents; }
+            get { return centre - extents; }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { SetMinMax(value, Max); }
         }
@@ -34,7 +34,7 @@ namespace Geo2D
         public Vector2 Max
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return _centre + _extents; }
+            get { return centre + extents; }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { SetMinMax(Min, value); }
         }
@@ -42,11 +42,11 @@ namespace Geo2D
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void SetMinMax(Vector2 min, Vector2 max)
         {
-            _extents = (max - min) * 0.5f;
-            _centre = min + _extents;
+            extents = (max - min) * 0.5f;
+            centre = min + extents;
         }
 
-        public Vector2 _centre;
-        public Vector2 _extents;
+        public Vector2 centre;
+        public Vector2 extents;
     }
 }

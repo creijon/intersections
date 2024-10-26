@@ -33,8 +33,8 @@ namespace Geo3D
             }
 
             var plane = _tri._tri.CalcPlane();
-            var p = Vector3.Lerp(_edge._edge._v0, _edge._edge._v1, t);
-            Debug.DrawLine(p, p + plane._n, _edge._color);
+            var p = Vector3.Lerp(_edge._edge.v0, _edge._edge.v1, t);
+            Debug.DrawLine(p, p + plane.n, _edge._color);
         }
     }
 

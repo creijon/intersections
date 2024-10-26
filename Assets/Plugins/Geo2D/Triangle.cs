@@ -9,20 +9,20 @@ namespace Geo2D
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Triangle(Vector2 v0, Vector2 v1, Vector2 v2)
         {
-            _v0 = v0;
-            _v1 = v1;
-            _v2 = v2;
+            this.v0 = v0;
+            this.v1 = v1;
+            this.v2 = v2;
         }
 
-        public Edge Edge0 => new Edge(_v0, _v1);
-        public Edge Edge1 => new Edge(_v1, _v2);
-        public Edge Edge2 => new Edge(_v2, _v0);
+        public Edge Edge0 => new Edge(v0, v1);
+        public Edge Edge1 => new Edge(v1, v2);
+        public Edge Edge2 => new Edge(v2, v0);
 
         public Vector2 CalcBarycentric(Vector2 p)
         {
-            Vector2 v1 = _v1 - _v0;
-            Vector2 v0 = _v2 - _v0;
-            Vector2 v2 = p - _v0;
+            Vector2 v1 = this.v1 - this.v0;
+            Vector2 v0 = this.v2 - this.v0;
+            Vector2 v2 = p - this.v0;
 
             float dot00 = Vector2.Dot(v0, v0);
             float dot01 = Vector2.Dot(v0, v1);
@@ -37,9 +37,9 @@ namespace Geo2D
             return new Vector2(u, v);
         }
 
-        public Vector2 _v0;
-        public Vector2 _v1;
-        public Vector2 _v2;
+        public Vector2 v0;
+        public Vector2 v1;
+        public Vector2 v2;
     }
 
 }

@@ -141,8 +141,8 @@ public class BoxTest : MonoBehaviour
                             Debug.Log("Mismatch on box " + i + ", triangle " + j);
                             Debug.Log("Base:" + test1 + " Mine:" + test2);
 
-                            var c = _boxes[i]._aabb._centre;
-                            var e = _boxes[i]._aabb._extents;
+                            var c = _boxes[i]._aabb.centre;
+                            var e = _boxes[i]._aabb.extents;
                             Debug.Log("Centre: [" + c.x + "," + c.y + "," + c.z + "]");
                             Debug.Log("Extents: [" + e.x + "," + e.y + "," + e.z + "]");
                             Debug.Log("t0: [" + t0.x + "," + t0.y + "," + t0.z + "]");

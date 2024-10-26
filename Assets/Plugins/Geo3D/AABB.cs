@@ -8,8 +8,8 @@ namespace Geo3D
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public AABB(Vector3 centre, Vector3 extents)
         {
-            _centre = centre;
-            _extents = extents;
+            this.centre = centre;
+            this.extents = extents;
         }
 
         // By adding an unused bool to the constructor we initialise from a min and max value.
@@ -23,7 +23,7 @@ namespace Geo3D
         public Vector3 Min
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return _centre - _extents; }
+            get { return centre - extents; }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { SetMinMax(value, Max); }
         }
@@ -31,7 +31,7 @@ namespace Geo3D
         public Vector3 Max
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return _centre + _extents; }
+            get { return centre + extents; }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { SetMinMax(Min, value); }
         }
@@ -39,14 +39,14 @@ namespace Geo3D
         public Vector3 Size
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return _extents * 2.0f; }
+            get { return extents * 2.0f; }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void SetMinMax(Vector3 min, Vector3 max)
         {
-            _extents = (max - min) * 0.5f;
-            _centre = min + _extents;
+            extents = (max - min) * 0.5f;
+            centre = min + extents;
         }
 
         public void Include(Vector3 p)
@@ -54,11 +54,11 @@ namespace Geo3D
             SetMinMax(Vector3.Min(p, Min), Vector3.Max(p, Max));
         }
 
-        public Geo2D.Rect XY => new Geo2D.Rect(Util.XY(_centre), Util.XY(_extents));
-        public Geo2D.Rect YZ => new Geo2D.Rect(Util.YZ(_centre), Util.YZ(_extents));
-        public Geo2D.Rect ZX => new Geo2D.Rect(Util.ZX(_centre), Util.ZX(_extents));
+        public Geo2D.Rect XY => new Geo2D.Rect(Util.XY(centre), Util.XY(extents));
+        public Geo2D.Rect YZ => new Geo2D.Rect(Util.YZ(centre), Util.YZ(extents));
+        public Geo2D.Rect ZX => new Geo2D.Rect(Util.ZX(centre), Util.ZX(extents));
 
-        public Vector3 _centre;
-        public Vector3 _extents;
+        public Vector3 centre;
+        public Vector3 extents;
     }
 }

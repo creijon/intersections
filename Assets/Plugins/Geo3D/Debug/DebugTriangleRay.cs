@@ -34,7 +34,7 @@ namespace Geo3D
 
             Vector3 p = _ray._ray.CalcPos(t);
             Geo3D.Plane plane = _tri._tri.CalcPlane();
-            Debug.DrawLine(p, p + plane._n, _ray._color);
+            Debug.DrawLine(p, p + plane.n, _ray._color);
         }
     }
 

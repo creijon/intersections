@@ -6,18 +6,18 @@ namespace Geo2D
     {
         public static bool Test(Vector2 p, Rect rect)
         {
-            var cr = p - rect._centre;
+            var cr = p - rect.centre;
 
-            if (Mathf.Abs(cr.x) > rect._extents.x) return false;
-            if (Mathf.Abs(cr.y) > rect._extents.y) return false;
+            if (Mathf.Abs(cr.x) > rect.extents.x) return false;
+            if (Mathf.Abs(cr.y) > rect.extents.y) return false;
 
             return true;
         }
 
         public static bool Test(Rect rect1, Rect rect2)
         {
-            var cr = rect1._centre - rect2._centre;
-            var e = rect1._extents + rect2._extents;
+            var cr = rect1.centre - rect2.centre;
+            var e = rect1.extents + rect2.extents;
 
             if (Mathf.Abs(cr.x) > e.x) return false;
             if (Mathf.Abs(cr.y) > e.y) return false;
@@ -27,9 +27,9 @@ namespace Geo2D
 
         public static bool Test(Edge edge, Rect rect)
         {
-            var cr = edge.Centre - rect._centre;
+            var cr = edge.Centre - rect.centre;
             var ha = edge.Axis * 0.5f;
-            var e = rect._extents;
+            var e = rect.extents;
             var ahax = Mathf.Abs(ha.x);          // Exploiting symmetry
             var ahay = Mathf.Abs(ha.y);
 
@@ -46,12 +46,12 @@ namespace Geo2D
         public static bool Test(Edge a, Edge b, out float t)
         {
             t = 0.0f;
-            float a1 = Util.SignedTriArea(a._v0, a._v1, b._v1);
-            float a2 = Util.SignedTriArea(a._v0, a._v1, b._v0);
+            float a1 = Util.SignedTriArea(a.v0, a.v1, b.v1);
+            float a2 = Util.SignedTriArea(a.v0, a.v1, b.v0);
 
             if (a1 * a2 < 0.0f)
             {
-                float a3 = Util.SignedTriArea(b._v0, b._v1, a._v0);
+                float a3 = Util.SignedTriArea(b.v0, b.v1, a.v0);
                 // Since area is constant a1 - a2 = a3 - a4, or a4 = a3 + a2 - a1
                 float a4 = a3 + a2 - a1;
 
@@ -70,11 +70,11 @@ namespace Geo2D
 
         public static bool Test(Vector2 p, Triangle tri)
         {
-            var s = Util.SignedTriArea(tri._v0, p, tri._v2);
-            var t = Util.SignedTriArea(tri._v1, p, tri._v0);
+            var s = Util.SignedTriArea(tri.v0, p, tri.v2);
+            var t = Util.SignedTriArea(tri.v1, p, tri.v0);
             if ((s < 0) != (t < 0) && s != 0 && t != 0) return false;
 
-            var d = Util.SignedTriArea(tri._v2, p, tri._v1);
+            var d = Util.SignedTriArea(tri.v2, p, tri.v1);
             return d == 0 || (d < 0) == (s + t <= 0);
         }
 
@@ -86,7 +86,7 @@ namespace Geo2D
             if (Test(tri.Edge2, rect)) return true;
 
             // If centre of the box is inside the tri then it intersects.
-            if (Test(rect._centre, tri)) return true;
+            if (Test(rect.centre, tri)) return true;
 
             return false;
         }

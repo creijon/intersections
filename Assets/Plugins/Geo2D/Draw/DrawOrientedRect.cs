@@ -30,7 +30,7 @@ namespace Geo2D
 
         public static void DebugDraw(OrientedRect rect, Color color)
         {
-            Vector2 up = new Vector2(rect._axis.y, -rect._axis.x);
+            Vector2 up = new Vector2(rect.axis.y, -rect.axis.x);
         }
     }
 }

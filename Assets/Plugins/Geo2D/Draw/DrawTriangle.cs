@@ -39,9 +39,9 @@ namespace Geo2D
         {
             Reset();
 
-            Debug.DrawLine(_tri._v0, _tri._v1, _color);
-            Debug.DrawLine(_tri._v1, _tri._v2, _color);
-            Debug.DrawLine(_tri._v2, _tri._v0, _color);
+            Debug.DrawLine(_tri.v0, _tri.v1, _color);
+            Debug.DrawLine(_tri.v1, _tri.v2, _color);
+            Debug.DrawLine(_tri.v2, _tri.v0, _color);
         }
     }
 }

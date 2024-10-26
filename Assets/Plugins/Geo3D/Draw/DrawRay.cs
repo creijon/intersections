@@ -23,9 +23,9 @@ namespace Geo3D
         void Update()
         {
             Reset();
-            Vector3 end = _ray._origin + _ray._dir * 3f;
-            Vector3 tip = _ray._origin + _ray._dir * 3.2f;
-            Debug.DrawLine(_ray._origin, end, _color);
+            Vector3 end = _ray.origin + _ray.dir * 3f;
+            Vector3 tip = _ray.origin + _ray.dir * 3.2f;
+            Debug.DrawLine(_ray.origin, end, _color);
             Debug.DrawLine(end - transform.right * 0.1f, end + transform.right * 0.1f, _color);
             Debug.DrawLine(end - transform.right * 0.1f, tip, _color);
             Debug.DrawLine(end + transform.right * 0.1f, tip, _color);

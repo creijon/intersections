@@ -70,11 +70,11 @@ namespace Geo2D
 
         public static bool Test(Vector2 p, Triangle tri)
         {
-            var s = (tri._v0.x - tri._v2.x) * (p.y - tri._v2.y) - (tri._v0.y - tri._v2.y) * (p.x - tri._v2.x);
-            var t = (tri._v1.x - tri._v0.x) * (p.y - tri._v0.y) - (tri._v1.y - tri._v0.y) * (p.x - tri._v0.x);
+            var s = Util.SignedTriArea(tri._v0, p, tri._v2);
+            var t = Util.SignedTriArea(tri._v1, p, tri._v0);
             if ((s < 0) != (t < 0) && s != 0 && t != 0) return false;
 
-            var d = (tri._v2.x - tri._v1.x) * (p.y - tri._v1.y) - (tri._v2.y - tri._v1.y) * (p.x - tri._v1.x);
+            var d = Util.SignedTriArea(tri._v2, p, tri._v1);
             return d == 0 || (d < 0) == (s + t <= 0);
         }
 

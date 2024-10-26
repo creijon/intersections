@@ -1,12 +1,12 @@
 using UnityEngine;
 
-namespace Geo3D
+namespace Geo2D
 {
     [ExecuteInEditMode]
-    public class DebugTrianglePoint : MonoBehaviour
+    public class DebugPointTriangle : MonoBehaviour
     {
-        public DrawTriangle _tri;
         public GameObject _point;
+        public DrawTriangle _tri;
 
         // Start is called before the first frame update
         void Start()
@@ -17,14 +17,11 @@ namespace Geo3D
         // Update is called once per frame
         void Update()
         {
-            if (!_tri || !_point) return;
+            if (!_point || !_tri) return;
 
-            var plane = _tri._tri.CalcPlane();
             Color color = new Color(1.0f, 1.0f, 0.0f);
 
-            Debug.DrawLine(_point.transform.position, plane.Project(_point.transform.position), color);
-
-            if (Intersect.Test(_point.transform.position, _tri._tri))
+            if (Intersect.Test(Util.XY(_point.transform.position), _tri._tri))
             {
                 _tri._color = Color.green;
             }
@@ -34,5 +31,4 @@ namespace Geo3D
             }
         }
     }
-
 }

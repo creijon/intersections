@@ -2,13 +2,15 @@ using UnityEngine;
 using Unity.Collections;
 using System.IO;
 using Geo3D;
+using Unity.Mathematics;
+using static Unity.Mathematics.math;
 
 [RequireComponent(typeof(MeshFilter))]
 public class BoxTest : MonoBehaviour
 {
     class Box
     {
-        public Box(Vector3 min, Vector3 max)
+        public Box(float3 min, float3 max)
         {
             _aabb = new AABB(min, max, true);
             _triCount = 0;
@@ -19,8 +21,8 @@ public class BoxTest : MonoBehaviour
     }
 
     Mesh _mesh;
-    Vector3 _min;
-    Vector3 _max;
+    float3 _min;
+    float3 _max;
     public bool _mySolution = false;
     public bool _comparison = false;
     public int _randomSeed = 100;
@@ -41,24 +43,26 @@ public class BoxTest : MonoBehaviour
         writer.Close();
     }
 
-    Vector3 RandomVector()
+    float3 RandomVector()
     {
-        return new Vector3(Random.Range(_min.x, _max.x), Random.Range(_min.y, _max.y), Random.Range(_min.z, _max.z));
+        return new float3(UnityEngine.Random.Range(_min.x, _max.x),
+                          UnityEngine.Random.Range(_min.y, _max.y),
+                          UnityEngine.Random.Range(_min.z, _max.z));
     }
 
     // Start is called before the first frame update
     void Start()
     {
         _mesh = GetComponent<MeshFilter>().mesh;
-        NativeArray<Vector3> vertices;
+        NativeArray<float3> vertices;
         NativeArray<ushort> indices;
 
         using (Mesh.MeshDataArray dataArray = Mesh.AcquireReadOnlyMeshData(_mesh))
         {
             var data = dataArray[0];
 
-            vertices = new NativeArray<Vector3>(_mesh.vertexCount, Allocator.Persistent);
-            data.GetVertices(vertices);
+            vertices = new NativeArray<float3>(_mesh.vertexCount, Allocator.Persistent);
+            data.GetVertices(vertices.Reinterpret<Vector3>());
 
             indices = new NativeArray<ushort>((int)_mesh.GetIndexCount(0), Allocator.Persistent);
             data.GetIndices(indices, 0);
@@ -70,40 +74,40 @@ public class BoxTest : MonoBehaviour
 
         foreach (var vert in vertices)
         {
-            _min = Vector3.Min(vert, _min);
-            _max = Vector3.Max(vert, _max);
+            _min = min(vert, _min);
+            _max = max(vert, _max);
         }
 
         // Create a series of random boxes.
-        Random.InitState(_randomSeed);
+        UnityEngine.Random.InitState(_randomSeed);
         for (int i = 0; i < _boxCount; ++i)
         {
             var a = RandomVector();
             var b = RandomVector();
 
-            var min = Vector3.Min(a, b);
-            var max = Vector3.Max(a, b);
+            var minV = min(a, b);
+            var maxV = max(a, b);
 
             // Pick one of the three axes to snap to the outer box.
-            int clampAxis = Random.Range(0, 3);
+            int clampAxis = UnityEngine.Random.Range(0, 3);
 
             if (clampAxis == 0)
             {
-                min.x = 0.0f;
-                max.x = _max.x;
+                minV.x = 0.0f;
+                maxV.x = _max.x;
             }
             else if (clampAxis == 1)
             {
-                min.y = 0.0f;
-                max.y = _max.y;
+                minV.y = 0.0f;
+                maxV.y = _max.y;
             }
             else
             {
-                min.z = 0.0f;
-                max.z = _max.z;
+                minV.z = 0.0f;
+                maxV.z = _max.z;
             }
 
-            _boxes[i] = new Box(min, max);
+            _boxes[i] = new Box(minV, maxV);
         }
 
         var stopWatch = new System.Diagnostics.Stopwatch();

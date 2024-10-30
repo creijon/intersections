@@ -45,16 +45,15 @@ namespace Geo3D
         {
             var ha = edge.Axis * 0.5f;
             var cr = edge.Centre - aabb.centre;
-            var e = aabb.extents;
             var acr = abs(cr);
             var aha = abs(ha);
 
             if (any(acr > aabb.extents + aha)) return false;
 
-            // TODO: rewrite with swizzles and 'any'
-            if (abs(ha.z * cr.x - ha.x * cr.z) > e.z * aha.x + e.x * aha.z + EPSILON) return false;
-            if (abs(ha.x * cr.y - ha.y * cr.x) > e.x * aha.y + e.y * aha.x + EPSILON) return false;
-            if (abs(ha.y * cr.z - ha.z * cr.y) > e.y * aha.z + e.z * aha.y + EPSILON) return false;
+            var axis1 = abs(ha * cr.yzx - ha.yzx * cr.xyz);
+            var axis2 = (aabb.extents * aha.yzx + aabb.extents.yzx * aha) + EPSILON;
+
+            if (any(axis1 > axis2)) return false;
 
             return true;
         }

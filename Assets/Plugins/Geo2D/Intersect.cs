@@ -28,12 +28,11 @@ namespace Geo2D
         {
             var cr = edge.Centre - rect.centre;
             var ha = edge.Axis * 0.5f;
-            var e = rect.extents;
             var acr = abs(cr);
             var aha = abs(ha);
 
-            if (any(acr > e + aha)) return false;
-            if (abs(ha.x * cr.y - ha.y * cr.x) > e.x * aha.y + e.y * aha.x + EPSILON) return false;
+            if (any(acr > rect.extents + aha)) return false;
+            if (abs(ha.x * cr.y - ha.y * cr.x) > rect.extents.x * aha.y + rect.extents.y * aha.x + EPSILON) return false;
 
             return true;
         }

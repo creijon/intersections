@@ -1304,7 +1304,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 178b8b670653f59498983fa9b69a4bc8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _mySolution: 0
+  _mySolution: 1
   _comparison: 0
   _randomSeed: 100
   _boxCount: 1000

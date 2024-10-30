@@ -39,3 +39,7 @@ The Schwarz-Seidel algorithm can only exit early in situations where the shapes 
 This means that it is significantly more efficient if the domain is mostly made up of intersecting shapes.  This is often the case when performing a series of hierarchial tests such as with the generation of Sparse Voxel Octrees from triangle meshes.
 
 If the domain contains a significant number of disjoint shape queries then performance of the two solutions is very similar, since the bounding box check is very effective in filtering these out early.
+
+### Unity Burst and Mathematics
+
+I've ported the intersection functions over to use Unity.Mathematics, which has cleaned up a lot of the code and made it far more similar to GLSL or HLSL.  However, the performance when of Unity.Mathematics when not being complied with Unity Burst is far worse than the equivalent functions written with the traditional Vector3 classes and Mathf functions.  I think it's worth keeping both implementations for the cases where you can't use Burst.

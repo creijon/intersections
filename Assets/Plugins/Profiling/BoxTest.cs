@@ -1,31 +1,66 @@
 using UnityEngine;
 using Unity.Collections;
 using System.IO;
-using Geo3D;
+using Geo3Dm;
+using Unity.Jobs;
+using Unity.Mathematics;
+using static Unity.Mathematics.math;
+using Unity.Burst;
 
 [RequireComponent(typeof(MeshFilter))]
 public class BoxTest : MonoBehaviour
 {
-    class Box
+    [BurstCompile]
+    public struct Job : IJob
     {
-        public Box(Vector3 min, Vector3 max)
-        {
-            _aabb = new AABB(min, max, true);
-            _triCount = 0;
-        }
+        public NativeArray<AABB> boxes;
+        public NativeArray<uint> triCounts;
+        public NativeArray<float3> vertices;
+        public NativeArray<ushort> indices;
+        public bool mySolution;
 
-        public AABB _aabb;
-        public uint _triCount;
+        public void Execute()
+        {
+            for (int i = 0; i < boxes.Length; ++i)
+            {
+                // Test all the triangles against the boxes.
+                // Store the results.
+                for (int j = 0; j < indices.Length; j += 3)
+                {
+                    var t0 = vertices[indices[j + 0]];
+                    var t1 = vertices[indices[j + 1]];
+                    var t2 = vertices[indices[j + 2]];
+                    var tri = new Triangle(t0, t1, t2);
+
+                    bool test1 = false;
+
+                    if (mySolution)
+                    {
+                        test1 = Intersect.Test(tri, boxes[i]);
+                    }
+                    else
+                    {
+                        test1 = Intersect.TestSS(tri, boxes[i]);
+                    }
+
+                    if (test1)
+                    {
+                        triCounts[i] += 1;
+                    }
+                }
+            }
+        }
     }
 
     Mesh _mesh;
-    Vector3 _min;
-    Vector3 _max;
+    float3 _min;
+    float3 _max;
     public bool _mySolution = false;
     public bool _comparison = false;
     public int _randomSeed = 100;
     public int _boxCount = 1000;
-    Box[] _boxes;
+
+    Job _job;
 
     void WriteResults(string filePath)
     {
@@ -33,77 +68,82 @@ public class BoxTest : MonoBehaviour
         StreamWriter writer = new StreamWriter(filePath, true);
 
         // Now output the results to terminal.
-        for (int i = 0; i < _boxCount; ++i)
+        for (int i = 0; i < _job.triCounts.Length; ++i)
         {
-            writer.WriteLine(i + "\t" + _boxes[i]._triCount);
+            writer.WriteLine(i + "\t" + _job.triCounts[i]);
         }
 
         writer.Close();
     }
 
-    Vector3 RandomVector()
+    float3 RandomVector()
     {
-        return new Vector3(Random.Range(_min.x, _max.x), Random.Range(_min.y, _max.y), Random.Range(_min.z, _max.z));
+        return new float3(UnityEngine.Random.Range(_min.x, _max.x),
+                          UnityEngine.Random.Range(_min.y, _max.y),
+                          UnityEngine.Random.Range(_min.z, _max.z));
     }
 
     // Start is called before the first frame update
     void Start()
     {
         _mesh = GetComponent<MeshFilter>().mesh;
-        NativeArray<Vector3> vertices;
-        NativeArray<ushort> indices;
+        _job = new Job();
 
         using (Mesh.MeshDataArray dataArray = Mesh.AcquireReadOnlyMeshData(_mesh))
         {
             var data = dataArray[0];
 
-            vertices = new NativeArray<Vector3>(_mesh.vertexCount, Allocator.Persistent);
-            data.GetVertices(vertices);
+            _job.vertices = new NativeArray<float3>(_mesh.vertexCount, Allocator.Persistent);
+            data.GetVertices(_job.vertices.Reinterpret<Vector3>());
 
-            indices = new NativeArray<ushort>((int)_mesh.GetIndexCount(0), Allocator.Persistent);
-            data.GetIndices(indices, 0);
+            _job.indices = new NativeArray<ushort>((int)_mesh.GetIndexCount(0), Allocator.Persistent);
+            data.GetIndices(_job.indices, 0);
         }
 
-        _min = vertices[0];
-        _max = vertices[0];
-        _boxes = new Box[_boxCount];
+        _job.boxes = new NativeArray<AABB>(_boxCount, Allocator.Persistent);
+        _job.triCounts = new NativeArray<uint>(_boxCount, Allocator.Persistent);
+        _job.mySolution = _mySolution;
 
-        foreach (var vert in vertices)
+        _min = _job.vertices[0];
+        _max = _job.vertices[0];
+
+        foreach (var vert in _job.vertices)
         {
-            _min = Vector3.Min(vert, _min);
-            _max = Vector3.Max(vert, _max);
+            _min = min(vert, _min);
+            _max = max(vert, _max);
         }
 
         // Create a series of random boxes.
-        Random.InitState(_randomSeed);
+        UnityEngine.Random.InitState(_randomSeed);
         for (int i = 0; i < _boxCount; ++i)
         {
             var a = RandomVector();
             var b = RandomVector();
 
-            var min = Vector3.Min(a, b);
-            var max = Vector3.Max(a, b);
+            var minV = min(a, b);
+            var maxV = max(a, b);
 
             // Pick one of the three axes to snap to the outer box.
-            int clampAxis = Random.Range(0, 3);
+            int clampAxis = UnityEngine.Random.Range(0, 3);
 
             if (clampAxis == 0)
             {
-                min.x = 0.0f;
-                max.x = _max.x;
+                minV.x = 0.0f;
+                maxV.x = _max.x;
             }
             else if (clampAxis == 1)
             {
-                min.y = 0.0f;
-                max.y = _max.y;
+                minV.y = 0.0f;
+                maxV.y = _max.y;
             }
             else
             {
-                min.z = 0.0f;
-                max.z = _max.z;
+                minV.z = 0.0f;
+                maxV.z = _max.z;
             }
 
-            _boxes[i] = new Box(min, max);
+            _job.boxes[i].SetMinMax(minV, maxV);
+            _job.triCounts[i] = 0;
         }
 
         var stopWatch = new System.Diagnostics.Stopwatch();
@@ -111,55 +151,11 @@ public class BoxTest : MonoBehaviour
 
         uint totalIntersections = 0;
 
-        for (int i = 0; i < _boxCount; ++i)
-        {
-            // Test all the triangles against the boxes.
-            // Store the results.
-            for (int j = 0; j < indices.Length; j += 3)
-            {
-                var t0 = vertices[indices[j + 0]];
-                var t1 = vertices[indices[j + 1]];
-                var t2 = vertices[indices[j + 2]];
-                var tri = new Triangle(t0, t1, t2);
 
-                bool test1 = false;
-                
-                if (_mySolution)
-                {
-                    test1 = Intersect.Test(tri, _boxes[i]._aabb);
-                }
-                else
-                {
-                    test1 = Intersect.TestSS(tri, _boxes[i]._aabb);
+        JobHandle jobHandle;
 
-                    if (_comparison)
-                    {
-                        bool test2 = Intersect.Test(tri, _boxes[i]._aabb);
-
-                        if (test1 != test2)
-                        {
-                            Debug.Log("Mismatch on box " + i + ", triangle " + j);
-                            Debug.Log("Base:" + test1 + " Mine:" + test2);
-
-                            var c = _boxes[i]._aabb.centre;
-                            var e = _boxes[i]._aabb.extents;
-                            Debug.Log("Centre: [" + c.x + "," + c.y + "," + c.z + "]");
-                            Debug.Log("Extents: [" + e.x + "," + e.y + "," + e.z + "]");
-                            Debug.Log("t0: [" + t0.x + "," + t0.y + "," + t0.z + "]");
-                            Debug.Log("t1: [" + t1.x + "," + t1.y + "," + t1.z + "]");
-                            Debug.Log("t2: [" + t2.x + "," + t2.y + "," + t2.z + "]");
-                        }
-                    }
-                }
-
-                if (test1)
-                {
-                    _boxes[i]._triCount += 1;
-                }
-            }
-
-            totalIntersections += _boxes[i]._triCount;
-        }
+        jobHandle = _job.Schedule();
+        jobHandle.Complete();
 
         stopWatch.Stop();
 
@@ -170,7 +166,7 @@ public class BoxTest : MonoBehaviour
             ts.Hours, ts.Minutes, ts.Seconds,
             ts.Milliseconds / 10);
 
-        Debug.Log("Tests: " + _boxCount * (indices.Length / 3) + " Intersections: " + totalIntersections + " Runtime: " + elapsedTime);
+        Debug.Log("Tests: " + _boxCount * (_job.indices.Length / 3) + " Intersections: " + totalIntersections + " Runtime: " + elapsedTime);
     }
 
     // Update is called once per frame

@@ -17,9 +17,9 @@ namespace Geo3Dm
         public Edge Edge0 => new Edge(v0, v1);
         public Edge Edge1 => new Edge(v1, v2);
         public Edge Edge2 => new Edge(v2, v0); 
-        public Geo2D.Triangle XY => new Geo2D.Triangle(v0.xy, v1.xy, v2.xy);
-        public Geo2D.Triangle YZ => new Geo2D.Triangle(v0.yz, v1.yz, v2.yz);
-        public Geo2D.Triangle ZX => new Geo2D.Triangle(v0.zx, v1.zx, v2.zx);
+        public Geo2Dm.Triangle XY => new Geo2Dm.Triangle(v0.xy, v1.xy, v2.xy);
+        public Geo2Dm.Triangle YZ => new Geo2Dm.Triangle(v0.yz, v1.yz, v2.yz);
+        public Geo2Dm.Triangle ZX => new Geo2Dm.Triangle(v0.zx, v1.zx, v2.zx);
 
         public AABB CalcBounds()
         {

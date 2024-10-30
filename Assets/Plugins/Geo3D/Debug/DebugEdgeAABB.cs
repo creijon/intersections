@@ -18,6 +18,8 @@ namespace Geo3D
         void Update()
         {
             if (!_aabb || !_edge) return;
+            if (_aabb._aabb == null) return;
+            if (_edge._edge == null) return;
 
             Color color = new Color(1.0f, 1.0f, 0.0f);
 

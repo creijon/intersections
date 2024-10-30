@@ -17,6 +17,8 @@ namespace Geo2D
         void Update()
         {
             if (!_edge || !_rect) return;
+            if (_edge._edge == null) return;
+            if (_rect._rect == null) return;
 
             Color color = new Color(1.0f, 1.0f, 0.0f);
 

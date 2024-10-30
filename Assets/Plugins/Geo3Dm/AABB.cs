@@ -56,9 +56,9 @@ namespace Geo3Dm
             SetMinMax(min(p, Min), max(p, Max));
         }
 
-        public Geo2D.Rect XY => new Geo2D.Rect(centre.xy, extents.xy);
-        public Geo2D.Rect YZ => new Geo2D.Rect(centre.yz, extents.yz);
-        public Geo2D.Rect ZX => new Geo2D.Rect(centre.zx, extents.zx);
+        public Geo2Dm.Rect XY => new Geo2Dm.Rect(centre.xy, extents.xy);
+        public Geo2Dm.Rect YZ => new Geo2Dm.Rect(centre.yz, extents.yz);
+        public Geo2Dm.Rect ZX => new Geo2Dm.Rect(centre.zx, extents.zx);
 
         public float3 centre;
         public float3 extents;

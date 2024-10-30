@@ -164,9 +164,9 @@ namespace Geo3Dm
         {
             if (!Test(tri.CalcPlane(), aabb)) return false;
 
-            if (!Geo2D.Intersect.Test(tri.XY, aabb.XY)) return false;
-            if (!Geo2D.Intersect.Test(tri.YZ, aabb.YZ)) return false;
-            if (!Geo2D.Intersect.Test(tri.ZX, aabb.ZX)) return false;
+            if (!Geo2Dm.Intersect.Test(tri.XY, aabb.XY)) return false;
+            if (!Geo2Dm.Intersect.Test(tri.YZ, aabb.YZ)) return false;
+            if (!Geo2Dm.Intersect.Test(tri.ZX, aabb.ZX)) return false;
 
             return true;
         }

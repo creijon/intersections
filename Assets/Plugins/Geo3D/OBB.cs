@@ -1,13 +1,14 @@
-using UnityEngine;
+using Unity.Mathematics;
 
 namespace Geo3D
 {
-    public class OBB
+    public struct OBB
     {
-        public OBB(Matrix4x4 transform)
+        public OBB(float4x4 transform)
         {
+            _transform = transform;
         }
 
-        public Matrix4x4 _transform;
+        public float4x4 _transform;
     }
 }

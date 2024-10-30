@@ -1,4 +1,5 @@
 using UnityEngine;
+using Unity.Mathematics;
 
 namespace Geo2D
 {
@@ -10,7 +11,9 @@ namespace Geo2D
 
         void Reset()
         {
-            _rect = new Rect(transform.position, transform.localScale * 0.5f);
+            float3 position = transform.position;
+            float3 scale = transform.localScale * 0.5f;
+            _rect = new Rect(position.xy, scale.xy);
         }
 
         // Start is called before the first frame update

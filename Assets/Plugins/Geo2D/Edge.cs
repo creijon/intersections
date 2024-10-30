@@ -1,36 +1,38 @@
 using System.Runtime.CompilerServices;
-using UnityEngine;
+using Unity.Mathematics;
+using static Unity.Mathematics.math;
 
 namespace Geo2D
 {
     // A line segment connecting two points on the XY plane.
-    public class Edge
+    public struct Edge
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Edge(Vector2 v0, Vector2 v1)
+        public Edge(float2 v0, float2 v1)
         {
             this.v0 = v0;
             this.v1 = v1;
         }
 
-        public Vector2 CalcDirection()
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public float2 CalcDirection()
         {
-            return Axis.normalized;
+            return normalize(Axis);
         }
 
-        public Vector2 Axis
+        public float2 Axis
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return v1 - v0; }
         }
 
-        public Vector2 Centre
+        public float2 Centre
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return v0 + Axis * 0.5f; }
         }
 
-        public Vector2 v0;
-        public Vector2 v1;
+        public float2 v0;
+        public float2 v1;
     }
 }

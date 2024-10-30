@@ -1,26 +1,26 @@
 using System.Runtime.CompilerServices;
-using UnityEngine;
+using Unity.Mathematics;
 
 namespace Geo2D
 {
     // A ray on the XY plane.
     // Defined by an origin and a direction vector of unit length.
-    public class Ray
+    public struct Ray
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Ray(Vector2 origin, Vector2 dir)
+        public Ray(float2 origin, float2 dir)
         {
             this.origin = origin;
             this.dir = dir;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Vector2 CalcPos(float t)
+        public float2 CalcPos(float t)
         {
             return origin + dir * t;
         }
 
-        public Vector2 origin;
-        public Vector2 dir;
+        public float2 origin;
+        public float2 dir;
     }
 }

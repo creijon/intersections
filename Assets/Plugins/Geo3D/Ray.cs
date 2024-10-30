@@ -1,24 +1,24 @@
 using System.Runtime.CompilerServices;
-using UnityEngine;
+using Unity.Mathematics;
 
 namespace Geo3D
 {
-    public class Ray
+    public struct Ray
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Ray(Vector3 origin, Vector3 dir)
+        public Ray(float3 origin, float3 dir)
         {
             this.origin = origin;
             this.dir = dir;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Vector3 CalcPos(float t)
+        public float3 CalcPos(float t)
         {
             return origin + dir * t;
         }
 
-        public Vector3 origin;
-        public Vector3 dir;
+        public float3 origin;
+        public float3 dir;
     }
 }

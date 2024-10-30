@@ -1,4 +1,6 @@
 using UnityEngine;
+using Unity.Mathematics;
+using static Unity.Mathematics.math;
 
 namespace Geo2D
 {
@@ -10,8 +12,11 @@ namespace Geo2D
 
         void Reset()
         {
-            Vector2 axis = Geo3D.Util.XY(transform.right).normalized;
-            _orientedRect = new OrientedRect(transform.position, axis, transform.localScale * 0.5f);
+            float3 position = transform.position;
+            float3 right = transform.right;
+            float2 axis = normalize(right.xy);
+            float3 scale = transform.localScale * 0.5f;
+            _orientedRect = new OrientedRect(position.xy, scale.xy, axis);
         }
 
         // Start is called before the first frame update

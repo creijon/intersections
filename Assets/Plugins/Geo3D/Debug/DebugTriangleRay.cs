@@ -32,7 +32,7 @@ namespace Geo3D
                 _tri._color = Color.red;
             }
 
-            Vector3 p = _ray._ray.CalcPos(t);
+            var p = _ray._ray.CalcPos(t);
             Geo3D.Plane plane = _tri._tri.CalcPlane();
             Debug.DrawLine(p, p + plane.n, _ray._color);
         }

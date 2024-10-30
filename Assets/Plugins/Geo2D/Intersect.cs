@@ -1,26 +1,25 @@
-using UnityEngine;
+using Unity.Mathematics;
+using static Unity.Mathematics.math;
 
 namespace Geo2D
 {
     public static class Intersect
     {
-        public static bool Test(Vector2 p, Rect rect)
+        public static bool Test(float2 p, Rect rect)
         {
-            var cr = p - rect.centre;
+            var acr = abs(p - rect.centre);
 
-            if (Mathf.Abs(cr.x) > rect.extents.x) return false;
-            if (Mathf.Abs(cr.y) > rect.extents.y) return false;
+            if (any(acr > rect.extents)) return false;
 
             return true;
         }
 
         public static bool Test(Rect rect1, Rect rect2)
         {
-            var cr = rect1.centre - rect2.centre;
             var e = rect1.extents + rect2.extents;
+            var acr = abs(rect1.centre - rect2.centre);
 
-            if (Mathf.Abs(cr.x) > e.x) return false;
-            if (Mathf.Abs(cr.y) > e.y) return false;
+            if (any(acr > e)) return false;
 
             return true;
         }
@@ -30,12 +29,11 @@ namespace Geo2D
             var cr = edge.Centre - rect.centre;
             var ha = edge.Axis * 0.5f;
             var e = rect.extents;
-            var ahax = Mathf.Abs(ha.x);          // Exploiting symmetry
-            var ahay = Mathf.Abs(ha.y);
+            var acr = abs(cr);
+            var aha = abs(ha);
 
-            if (Mathf.Abs(cr.x) > e.x + ahax) return false;
-            if (Mathf.Abs(cr.y) > e.y + ahay) return false;
-            if (Mathf.Abs(ha.x * cr.y - ha.y * cr.x) > e.x * ahay + e.y * ahax + Mathf.Epsilon) return false;
+            if (any(acr > e + aha)) return false;
+            if (abs(ha.x * cr.y - ha.y * cr.x) > e.x * aha.y + e.y * aha.x + EPSILON) return false;
 
             return true;
         }
@@ -68,7 +66,23 @@ namespace Geo2D
             return false;
         }
 
-        public static bool Test(Vector2 p, Triangle tri)
+        // Same as above but faster if the point of intersection isn't required.
+        public static bool Test(Edge a, Edge b)
+        {
+            float a1 = Util.SignedTriArea(a.v0, a.v1, b.v1);
+            float a2 = Util.SignedTriArea(a.v0, a.v1, b.v0);
+
+            if (a1 * a2 < 0.0f)
+            {
+                float a3 = Util.SignedTriArea(b.v0, b.v1, a.v0);
+                float a4 = a3 + a2 - a1;
+                if (a3 * a4 < 0.0f) return true;
+            }
+
+            return false;
+        }
+
+        public static bool Test(float2 p, Triangle tri)
         {
             var s = Util.SignedTriArea(tri.v0, p, tri.v2);
             var t = Util.SignedTriArea(tri.v1, p, tri.v0);

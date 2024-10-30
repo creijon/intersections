@@ -1,31 +1,32 @@
 using System.Runtime.CompilerServices;
-using UnityEngine;
+using Unity.Mathematics;
+using static Unity.Mathematics.math;
 
 namespace Geo3D
 {
-    public class Plane
+    public struct Plane
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Plane(Vector3 n, float d)
+        public Plane(float3 n, float d)
         {
             this.n = n;
             this.d = d;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public float SignedDistance(Vector3 p)
+        public float SignedDistance(float3 p)
         {
-            Vector3 o = n * d;
-            return Vector3.Dot(n, p - o);
+            float3 o = n * d;
+            return dot(n, p - o);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Vector3 Project(Vector3 p)
+        public float3 Project(float3 p)
         {
             return p - (SignedDistance(p) * n);
         }
 
-        public Vector3 n;
+        public float3 n;
         public float d;
     }
 }

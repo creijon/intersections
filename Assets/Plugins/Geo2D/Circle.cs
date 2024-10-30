@@ -1,18 +1,18 @@
 using System.Runtime.CompilerServices;
-using UnityEngine;
+using Unity.Mathematics;
 
 namespace Geo2D
 {
-    public class Circle
+    public struct Circle
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Circle(Vector2 centre, float radius)
+        public Circle(float2 centre, float radius)
         {
             this.centre = centre;
             this.radius = radius;
         }
 
-        public Vector2 centre;
+        public float2 centre;
         public float radius;
     }
 }

@@ -1,4 +1,5 @@
 using UnityEngine;
+using Unity.Mathematics;
 
 namespace Geo2D
 {
@@ -20,8 +21,9 @@ namespace Geo2D
             if (!_point || !_tri) return;
 
             Color color = new Color(1.0f, 1.0f, 0.0f);
+            float3 position = _point.transform.position;
 
-            if (Intersect.Test(Util.XY(_point.transform.position), _tri._tri))
+            if (Intersect.Test(position.xy, _tri._tri))
             {
                 _tri._color = Color.green;
             }

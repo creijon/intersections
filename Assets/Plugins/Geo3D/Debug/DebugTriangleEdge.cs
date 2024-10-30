@@ -1,4 +1,5 @@
 using UnityEngine;
+using static Unity.Mathematics.math;
 
 namespace Geo3D
 {
@@ -33,7 +34,7 @@ namespace Geo3D
             }
 
             var plane = _tri._tri.CalcPlane();
-            var p = Vector3.Lerp(_edge._edge.v0, _edge._edge.v1, t);
+            var p = lerp(_edge._edge.v0, _edge._edge.v1, t);
             Debug.DrawLine(p, p + plane.n, _edge._color);
         }
     }

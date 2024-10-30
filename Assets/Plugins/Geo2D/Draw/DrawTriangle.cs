@@ -1,4 +1,5 @@
 using UnityEngine;
+using Unity.Mathematics;
 
 namespace Geo2D
 {
@@ -13,9 +14,9 @@ namespace Geo2D
         {
             if (_verts[0] && _verts[1] && _verts[2])
             {
-                var v0 = new Vector2(_verts[0].transform.position.x, _verts[0].transform.position.y);
-                var v1 = new Vector2(_verts[1].transform.position.x, _verts[1].transform.position.y);
-                var v2 = new Vector2(_verts[2].transform.position.x, _verts[2].transform.position.y);
+                var v0 = new float2(_verts[0].transform.position.x, _verts[0].transform.position.y);
+                var v1 = new float2(_verts[1].transform.position.x, _verts[1].transform.position.y);
+                var v2 = new float2(_verts[2].transform.position.x, _verts[2].transform.position.y);
 
                 _tri = new Triangle(v0, v1, v2);
             }
@@ -39,9 +40,13 @@ namespace Geo2D
         {
             Reset();
 
-            Debug.DrawLine(_tri.v0, _tri.v1, _color);
-            Debug.DrawLine(_tri.v1, _tri.v2, _color);
-            Debug.DrawLine(_tri.v2, _tri.v0, _color);
+            var v0 = new float3(_tri.v0, 0.0f);
+            var v1 = new float3(_tri.v1, 0.0f);
+            var v2 = new float3(_tri.v2, 0.0f);
+
+            Debug.DrawLine(v0, v1, _color);
+            Debug.DrawLine(v1, v2, _color);
+            Debug.DrawLine(v2, v0, _color);
         }
     }
 }

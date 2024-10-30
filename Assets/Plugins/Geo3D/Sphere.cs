@@ -1,16 +1,16 @@
-using UnityEngine;
+using Unity.Mathematics;
 
 namespace Geo3D
 {
-    public class Sphere
+    public struct Sphere
     {
-        public Sphere(Vector3 centre, float radius)
+        public Sphere(float3 centre, float radius)
         {
             this.centre = centre;
             this.radius = radius;
         }
 
-        public Vector2 centre;
+        public float3 centre;
         public float radius;
     }
 }

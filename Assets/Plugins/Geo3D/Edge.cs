@@ -1,37 +1,38 @@
 using System.Runtime.CompilerServices;
-using UnityEngine;
+using Unity.Mathematics;
+using static Unity.Mathematics.math;
 
 namespace Geo3D
 {
-    public class Edge
+    public struct Edge
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Edge(Vector3 v0, Vector3 v1)
+        public Edge(float3 v0, float3 v1)
         {
             this.v0 = v0;
             this.v1 = v1;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Vector3 CalcDirection()
+        public float3 CalcDirection()
         {
-            return (v1 - v0).normalized;
+            return normalize(v1 - v0);
         }
 
-        public Vector3 Axis
+        public float3 Axis
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return v1 - v0; }
         }
 
-        public Vector3 Centre
+        public float3 Centre
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return v0 + Axis * 0.5f; }
         }
 
-        public Vector3 v0;
-        public Vector3 v1;
+        public float3 v0;
+        public float3 v1;
     }
 
 }

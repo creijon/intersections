@@ -1,12 +1,13 @@
 using System.Runtime.CompilerServices;
-using UnityEngine;
+using Unity.Mathematics;
+using static Unity.Mathematics.math;
 
 namespace Geo3D
 {
-    public class AABB
+    public struct AABB
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public AABB(Vector3 centre, Vector3 extents)
+        public AABB(float3 centre, float3 extents)
         {
             this.centre = centre;
             this.extents = extents;
@@ -15,12 +16,13 @@ namespace Geo3D
         // By adding an unused bool to the constructor we initialise from a min and max value.
         // Validity not checked, but it doesn't matter since extents can be negative.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public AABB(Vector3 min, Vector3 max, bool minMax)
+        public AABB(float3 min, float3 max, bool minMax)
         {
-            SetMinMax(min, max);
+            extents = (max - min) * 0.5f;
+            centre = min + extents;
         }
 
-        public Vector3 Min
+        public float3 Min
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return centre - extents; }
@@ -28,7 +30,7 @@ namespace Geo3D
             set { SetMinMax(value, Max); }
         }
 
-        public Vector3 Max
+        public float3 Max
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return centre + extents; }
@@ -36,29 +38,29 @@ namespace Geo3D
             set { SetMinMax(Min, value); }
         }
 
-        public Vector3 Size
+        public float3 Size
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return extents * 2.0f; }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void SetMinMax(Vector3 min, Vector3 max)
+        public void SetMinMax(float3 min, float3 max)
         {
             extents = (max - min) * 0.5f;
             centre = min + extents;
         }
 
-        public void Include(Vector3 p)
+        public void Include(float3 p)
         {
-            SetMinMax(Vector3.Min(p, Min), Vector3.Max(p, Max));
+            SetMinMax(min(p, Min), max(p, Max));
         }
 
-        public Geo2D.Rect XY => new Geo2D.Rect(Util.XY(centre), Util.XY(extents));
-        public Geo2D.Rect YZ => new Geo2D.Rect(Util.YZ(centre), Util.YZ(extents));
-        public Geo2D.Rect ZX => new Geo2D.Rect(Util.ZX(centre), Util.ZX(extents));
+        public Geo2D.Rect XY => new Geo2D.Rect(centre.xy, extents.xy);
+        public Geo2D.Rect YZ => new Geo2D.Rect(centre.yz, extents.yz);
+        public Geo2D.Rect ZX => new Geo2D.Rect(centre.zx, extents.zx);
 
-        public Vector3 centre;
-        public Vector3 extents;
+        public float3 centre;
+        public float3 extents;
     }
 }

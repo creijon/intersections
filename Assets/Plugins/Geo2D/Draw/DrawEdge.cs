@@ -1,4 +1,6 @@
 using UnityEngine;
+using Unity.Mathematics;
+using Geo3D;
 
 namespace Geo2D
 {
@@ -32,7 +34,8 @@ namespace Geo2D
         void Update()
         {
             Reset();
-            Debug.DrawLine(_edge.v0, _edge.v1, _color);
+
+            Debug.DrawLine(new float3(_edge.v0, 0.0f), new float3(_edge.v1, 0.0f), _color);
         }
     }
 }

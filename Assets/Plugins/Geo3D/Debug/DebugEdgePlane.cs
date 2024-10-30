@@ -1,4 +1,6 @@
 using UnityEngine;
+using Unity.Mathematics;
+using static Unity.Mathematics.math;
 
 namespace Geo3D
 {
@@ -27,7 +29,7 @@ namespace Geo3D
             if (Intersect.Test(_edge._edge, plane, out t))
             {
                 _edge._color = Color.green;
-                Vector3 intersection = Vector3.Lerp(_edge._edge.v0, _edge._edge.v1, t);
+                var intersection = lerp(_edge._edge.v0, _edge._edge.v1, t);
 
                 Debug.DrawLine(intersection, intersection + plane.n, _edge._color);
             }

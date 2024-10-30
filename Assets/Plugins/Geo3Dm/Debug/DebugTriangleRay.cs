@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Geo3D
+namespace Geo3Dm
 {
     [ExecuteInEditMode]
     public class DebugTriangleRay : MonoBehaviour

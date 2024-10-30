@@ -1,6 +1,7 @@
+using Unity.Mathematics;
 using UnityEngine;
 
-namespace Geo3D
+namespace Geo3Dm
 {
     [ExecuteInEditMode]
     public class DebugRayAABB : MonoBehaviour
@@ -25,8 +26,8 @@ namespace Geo3D
             if (Intersect.Test(_ray._ray, _aabb._aabb, out t))
             {
                 _ray._color = Color.green;
-                Vector3 hitPos = _ray._ray.CalcPos(t);
-                DrawAABB.DebugDraw(-Vector3.one * 0.01f + hitPos, Vector3.one * 0.01f + hitPos, Color.green, Matrix4x4.identity);
+                var hitPos = _ray._ray.CalcPos(t);
+                DrawAABB.DebugDraw(hitPos - 0.01f, hitPos + 0.01f, Color.green, Matrix4x4.identity);
             }
             else
             {

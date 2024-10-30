@@ -1,0 +1,43 @@
+using UnityEngine;
+using Unity.Mathematics;
+using static Unity.Mathematics.math;
+
+namespace Geo3Dm
+{
+    [ExecuteInEditMode]
+    public class DebugEdgePlane : MonoBehaviour
+    {
+        public DrawTriangle _tri;
+        public DrawEdge _edge;
+
+        // Start is called before the first frame update
+        void Start()
+        {
+
+        }
+
+        // Update is called once per frame
+        void Update()
+        {
+            if (!_tri || !_edge) return;
+
+            Color color = new Color(1.0f, 1.0f, 0.0f);
+
+            var plane = _tri._tri.CalcPlane();
+            float t = 0.0f;
+
+            if (Intersect.Test(_edge._edge, plane, out t))
+            {
+                _edge._color = Color.green;
+                var intersection = lerp(_edge._edge.v0, _edge._edge.v1, t);
+
+                Debug.DrawLine(intersection, intersection + plane.n, _edge._color);
+            }
+            else
+            {
+                _edge._color = Color.red;
+            }
+        }
+    }
+
+}

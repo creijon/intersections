@@ -7,6 +7,14 @@ namespace Geo3Dm
     {
         public DrawTriangle _tri;
         public DrawAABB _aabb;
+        public enum Version
+        { 
+            SAT,
+            Siedel,
+            Mine
+        }
+
+        public Version _version;
 
         // Start is called before the first frame update
         void Start()
@@ -19,16 +27,25 @@ namespace Geo3Dm
         {
             if (!_aabb || !_tri) return;
 
-            Color color = new Color(1.0f, 1.0f, 0.0f);
+            bool result = false;
 
-            if (Intersect.Test(_tri._tri, _aabb._aabb))
+            if (Intersect.Test(_tri._tri.CalcBounds(), _aabb._aabb))
             {
-                _aabb._color = Color.green;
+                if (_version == Version.Siedel)
+                {
+                    result = Intersect.TestSS(_tri._tri, _aabb._aabb);
+                }
+                else if (_version == Version.SAT)
+                {
+                    result = Intersect.TestSAT(_tri._tri, _aabb._aabb);
+                }
+                else
+                {
+                    result = Intersect.TestNoBB(_tri._tri, _aabb._aabb);
+                }
             }
-            else
-            {
-                _aabb._color = Color.red;
-            }
+
+            _aabb._color = (result) ? Color.green : Color.red;
         }
     }
 }

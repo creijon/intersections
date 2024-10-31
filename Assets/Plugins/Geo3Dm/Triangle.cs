@@ -28,10 +28,7 @@ namespace Geo3Dm
 
         public float3 Cross()
         {
-            var edge0 = v1 - v0;
-            var edge1 = v1 - v2;
-
-            return cross(edge0, edge1);
+            return cross(v1 - v0, v1 - v2);
         }
 
         public float3 CalcNormal()

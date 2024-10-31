@@ -24,9 +24,25 @@ namespace Geo3Dm
             return true;
         }
 
+        public static bool Test(Edge edge, AABB aabb)
+        {
+            var ha = edge.Axis * 0.5f;          // Half axis
+            var cr = edge.Centre - aabb.centre; // Centre relative
+            var aha = abs(ha);                  // Abs half axis
+
+            if (any(abs(cr) > aabb.extents + aha)) return false;
+
+            var axis1 = abs(ha * cr.yzx - ha.yzx * cr.xyz);
+            var axis2 = (aabb.extents * aha.yzx + aabb.extents.yzx * aha) + EPSILON;
+
+            if (any(axis1 > axis2)) return false;
+
+            return true;
+        }
+
         public static bool Test(Ray ray, AABB aabb, out float t)
         {
-            var invDir = Util.Reciprocal(ray.dir);
+            var invDir = 1.0f / ray.dir;
             var rmin = (aabb.Min - ray.origin) * invDir;
             var rmax = (aabb.Max - ray.origin) * invDir;
             var tmax = Util.MinCoefficient(max(rmin, rmax));
@@ -41,31 +57,12 @@ namespace Geo3Dm
             return true;
         }
 
-        public static bool Test(Edge edge, AABB aabb)
-        {
-            var ha = edge.Axis * 0.5f;
-            var cr = edge.Centre - aabb.centre;
-            var aha = abs(ha);
-
-            if (any(abs(cr) > aabb.extents + aha)) return false;
-
-            var axis1 = abs(ha * cr.yzx - ha.yzx * cr.xyz);
-            var axis2 = (aabb.extents * aha.yzx + aabb.extents.yzx * aha) + EPSILON;
-
-            if (any(axis1 > axis2)) return false;
-
-            return true;
-        }
-
         // Adapted from Moller-Trumbore solution:
         // https://en.wikipedia.org/wiki/M%C3%B6ller%E2%80%93Trumbore_intersection_algorithm
         public static bool Test(Ray ray, Triangle tri, out float t)
         {
-            var t0 = tri.v0;
-            var t1 = tri.v1;
-            var t2 = tri.v2;
-            var e1 = t1 - t0;
-            var e2 = t2 - t0;
+            var e1 = tri.v1 - tri.v0;
+            var e2 = tri.v2 - tri.v0;
             var P = cross(ray.dir, e2);
             var det = dot(e1, P);
             t = 0.0f;
@@ -73,7 +70,7 @@ namespace Geo3Dm
             if (det > -EPSILON && det < EPSILON) return false;
 
             float invDet = 1.0f / det;
-            var T = ray.origin - t0;
+            var T = ray.origin - tri.v0;
             var u = dot(T, P) * invDet;
             if (u < 0.0f || u > 1.0f) return false;
 
@@ -162,7 +159,11 @@ namespace Geo3Dm
         // Provided for performance comparisons.
         public static bool TestSS(Triangle tri, AABB aabb)
         {
-            if (!Test(tri.CalcPlane(), aabb)) return false;
+            var n = tri.Cross();
+            var r = dot(aabb.extents, abs(n));
+            var s = dot(n, aabb.centre - tri.v0);
+
+            if (abs(s) > r) return false;
 
             if (!Geo2Dm.Intersect.Test(tri.XY, aabb.XY)) return false;
             if (!Geo2Dm.Intersect.Test(tri.YZ, aabb.YZ)) return false;
@@ -170,7 +171,8 @@ namespace Geo3Dm
 
             return true;
         }
-        /*
+
+
         // Separating Axis Theorem Solution
         // From Tomas Akenine-Moller 2001
         // https://fileadmin.cs.lth.se/cs/Personal/Tomas_Akenine-Moller/code/tribox_tam.pdf
@@ -209,7 +211,7 @@ namespace Geo3Dm
             p2 = dot(v2, a00);
             r = aabb.extents.y * abs(f0.z) + aabb.extents.z * abs(f0.y);
 
-            if (any(max(-Util.Max(p0, p1, p2), Util.Min(p0, p1, p2)) > r)
+            if (any(max(-Util.Max(p0, p1, p2), Util.Min(p0, p1, p2)) > r))
             {
                 return false;
             }
@@ -220,7 +222,7 @@ namespace Geo3Dm
             p2 = dot(v2, a01);
             r = aabb.extents.y * abs(f1.z) + aabb.extents.z * abs(f1.y);
 
-            if (any(max(-Util.Max(p0, p1, p2), Util.Min(p0, p1, p2)) > r)
+            if (any(max(-Util.Max(p0, p1, p2), Util.Min(p0, p1, p2)) > r))
             {
                 return false;
             }
@@ -231,7 +233,7 @@ namespace Geo3Dm
             p2 = dot(v2, a02);
             r = aabb.extents.y * abs(f2.z) + aabb.extents.z * abs(f2.y);
 
-            if (any(max(-Util.Max(p0, p1, p2), Util.Min(p0, p1, p2)) > r)
+            if (any(max(-Util.Max(p0, p1, p2), Util.Min(p0, p1, p2)) > r))
             {
                 return false;
             }
@@ -241,7 +243,7 @@ namespace Geo3Dm
             p1 = dot(v1, a10);
             p2 = dot(v2, a10);
             r = aabb.extents.x * abs(f0.z) + aabb.extents.z * abs(f0.x);
-            if (any(max(-Util.Max(p0, p1, p2), Util.Min(p0, p1, p2)) > r)
+            if (any(max(-Util.Max(p0, p1, p2), Util.Min(p0, p1, p2)) > r))
             {
                 return false;
             }
@@ -252,7 +254,7 @@ namespace Geo3Dm
             p2 = dot(v2, a11);
             r = aabb.extents.x * abs(f1.z) + aabb.extents.z * abs(f1.x);
 
-            if (any(max(-Util.Max(p0, p1, p2), Util.Min(p0, p1, p2)) > r)
+            if (any(max(-Util.Max(p0, p1, p2), Util.Min(p0, p1, p2)) > r))
             {
                 return false;
             }
@@ -263,7 +265,7 @@ namespace Geo3Dm
             p2 = dot(v2, a12);
             r = aabb.extents.x * abs(f2.z) + aabb.extents.z * abs(f2.x);
 
-            if (any(max(-Util.Max(p0, p1, p2), Util.Min(p0, p1, p2)) > r)
+            if (any(max(-Util.Max(p0, p1, p2), Util.Min(p0, p1, p2)) > r))
             {
                 return false;
             }
@@ -274,7 +276,7 @@ namespace Geo3Dm
             p2 = dot(v2, a20);
             r = aabb.extents.x * abs(f0.y) + aabb.extents.y * abs(f0.x);
 
-            if (any(max(-Util.Max(p0, p1, p2), Util.Min(p0, p1, p2)) > r)
+            if (any(max(-Util.Max(p0, p1, p2), Util.Min(p0, p1, p2)) > r))
             {
                 return false;
             }
@@ -285,7 +287,7 @@ namespace Geo3Dm
             p2 = dot(v2, a21);
             r = aabb.extents.x * abs(f1.y) + aabb.extents.y * abs(f1.x);
 
-            if (any(max(-Util.Max(p0, p1, p2), Util.Min(p0, p1, p2)) > r)
+            if (any(max(-Util.Max(p0, p1, p2), Util.Min(p0, p1, p2)) > r))
             {
                 return false;
             }
@@ -296,32 +298,32 @@ namespace Geo3Dm
             p2 = dot(v2, a22);
             r = aabb.extents.x * abs(f2.y) + aabb.extents.y * abs(f2.x);
 
-            if (any(max(-Util.Max(p0, p1, p2), Util.Min(p0, p1, p2)) > r)
+            if (any(max(-Util.Max(p0, p1, p2), Util.Min(p0, p1, p2)) > r))
             {
                 return false;
             }
 
-            if (any(max(v0.x, v1.x, v2.x) < -aabb.extents.x || Util.Min(v0.x, v1.x, v2.x) > aabb.extents.x)
+            if (any(Util.Max(v0.x, v1.x, v2.x) < -aabb.extents.x) || any(Util.Min(v0.x, v1.x, v2.x) > aabb.extents.x))
             {
                 return false;
             }
 
-            if (any(max(v0.y, v1.y, v2.y) < -aabb.extents.y || Util.Min(v0.y, v1.y, v2.y) > aabb.extents.y)
+            if (any(Util.Max(v0.y, v1.y, v2.y) < -aabb.extents.y) || any(Util.Min(v0.y, v1.y, v2.y) > aabb.extents.y))
             {
                 return false;
             }
 
-            if (any(max(v0.z, v1.z, v2.z) < -aabb.extents.z || Util.Min(v0.z, v1.z, v2.z) > aabb.extents.z)
+            if (any(Util.Max(v0.z, v1.z, v2.z) < -aabb.extents.z) || any(Util.Min(v0.z, v1.z, v2.z) > aabb.extents.z))
             {
                 return false;
             }
 
-
-            float normal = normalize(cross(f1, f0));
+            float3 normal = normalize(cross(f1, f0));
             float d = dot(normal, tri.v0);
             return Test(new Plane(normal, d), aabb);
         }
-        */
+
+
         public static bool TestNoBB(Triangle tri, AABB aabb)
         {
             // Test three triangle edges against box.
@@ -332,7 +334,12 @@ namespace Geo3Dm
             // If none of the edges of a degenerate triangle intersect then don't test any further.
             var n = tri.Cross();
             if (dot(n, n) < EPSILON) return false;
-            
+
+            // Test if plane of triangle intersects the box.
+            var r = dot(aabb.extents, abs(n));
+            var s = dot(n, aabb.centre - tri.v0);
+            if (abs(s) > r) return false;
+
             // Test the four internal diagonals of the box against the triangle.
             // This catches the situations where the middle of the triangle is intersected
             // by the box but not any of the edges.

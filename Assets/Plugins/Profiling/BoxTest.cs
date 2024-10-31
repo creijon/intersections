@@ -18,9 +18,12 @@ public class BoxTest : MonoBehaviour
         public NativeArray<float3> vertices;
         public NativeArray<ushort> indices;
         public bool mySolution;
+        public uint totalIntersections;
 
         public void Execute()
         {
+            totalIntersections = 0;
+
             for (int i = 0; i < boxes.Length; ++i)
             {
                 // Test all the triangles against the boxes.
@@ -34,20 +37,23 @@ public class BoxTest : MonoBehaviour
 
                     bool test1 = false;
 
-                    if (mySolution)
+                    // Early out if the AABB of the triangle is disjoint with the AABB.
+                    if (Intersect.Test(tri.CalcBounds(), boxes[i]))
                     {
-                        test1 = Intersect.Test(tri, boxes[i]);
-                    }
-                    else
-                    {
-                        test1 = Intersect.TestSS(tri, boxes[i]);
+                        if (mySolution)
+                        {
+                            test1 = Intersect.TestNoBB(tri, boxes[i]);
+                        }
+                        else
+                        {
+                            test1 = Intersect.TestSS(tri, boxes[i]);
+                        }
                     }
 
-                    if (test1)
-                    {
-                        triCounts[i] += 1;
-                    }
+                    triCounts[i] += (test1) ? 1U : 0;
                 }
+
+                totalIntersections += triCounts[i];
             }
         }
     }
@@ -103,6 +109,7 @@ public class BoxTest : MonoBehaviour
         _job.boxes = new NativeArray<AABB>(_boxCount, Allocator.Persistent);
         _job.triCounts = new NativeArray<uint>(_boxCount, Allocator.Persistent);
         _job.mySolution = _mySolution;
+        _job.totalIntersections = 0;
 
         _min = _job.vertices[0];
         _max = _job.vertices[0];
@@ -149,13 +156,7 @@ public class BoxTest : MonoBehaviour
         var stopWatch = new System.Diagnostics.Stopwatch();
         stopWatch.Start();
 
-        uint totalIntersections = 0;
-
-
-        JobHandle jobHandle;
-
-        jobHandle = _job.Schedule();
-        jobHandle.Complete();
+        _job.Execute();
 
         stopWatch.Stop();
 
@@ -166,7 +167,7 @@ public class BoxTest : MonoBehaviour
             ts.Hours, ts.Minutes, ts.Seconds,
             ts.Milliseconds / 10);
 
-        Debug.Log("Tests: " + _boxCount * (_job.indices.Length / 3) + " Intersections: " + totalIntersections + " Runtime: " + elapsedTime);
+        Debug.Log("Tests: " + _boxCount * (_job.indices.Length / 3) + " Intersections: " + _job.totalIntersections + " Runtime: " + elapsedTime);
     }
 
     // Update is called once per frame

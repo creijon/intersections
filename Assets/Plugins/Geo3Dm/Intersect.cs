@@ -24,22 +24,6 @@ namespace Geo3Dm
             return true;
         }
 
-        public static bool Test(Edge edge, AABB aabb)
-        {
-            var ha = edge.Axis * 0.5f;          // Half axis
-            var cr = edge.Centre - aabb.centre; // Centre relative
-            var aha = abs(ha);                  // Abs half axis
-
-            if (any(abs(cr) > aabb.extents + aha)) return false;
-
-            var axis1 = abs(ha * cr.yzx - ha.yzx * cr.xyz);
-            var axis2 = (aabb.extents * aha.yzx + aabb.extents.yzx * aha) + EPSILON;
-
-            if (any(axis1 > axis2)) return false;
-
-            return true;
-        }
-
         public static bool Test(Ray ray, AABB aabb, out float t)
         {
             var invDir = 1.0f / ray.dir;
@@ -53,6 +37,22 @@ namespace Geo3Dm
             if (tmin > tmax) return false;
 
             t = (tmin > 0.0f) ? tmin : tmax;
+
+            return true;
+        }
+
+        public static bool Test(Edge edge, AABB aabb)
+        {
+            var ha = edge.Axis * 0.5f;          // Half axis
+            var cr = edge.Centre - aabb.centre; // Centre relative
+            var aha = abs(ha);                  // Abs half axis
+
+            if (any(abs(cr) > aabb.extents + aha)) return false;
+
+            var axis1 = abs(ha * cr.yzx - ha.yzx * cr.xyz);
+            var axis2 = (aabb.extents * aha.yzx + aabb.extents.yzx * aha) + EPSILON;
+
+            if (any(axis1 > axis2)) return false;
 
             return true;
         }

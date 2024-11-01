@@ -67,11 +67,8 @@ namespace Geo3D
         // https://en.wikipedia.org/wiki/M%C3%B6ller%E2%80%93Trumbore_intersection_algorithm
         public static bool Test(Ray ray, Triangle tri, out float t)
         {
-            var t0 = tri.v0;
-            var t1 = tri.v1;
-            var t2 = tri.v2;
-            var e1 = t1 - t0;
-            var e2 = t2 - t0;
+            var e1 = tri.v1 - tri.v0;
+            var e2 = tri.v2 - tri.v0;
             var P = Vector3.Cross(ray.dir, e2);
             var det = Vector3.Dot(e1, P);
             t = 0.0f;
@@ -79,7 +76,7 @@ namespace Geo3D
             if (det > -Mathf.Epsilon && det < Mathf.Epsilon) return false;
 
             float invDet = 1.0f / det;
-            var T = ray.origin - t0;
+            var T = ray.origin - tri.v0;
             var u = Vector3.Dot(T, P) * invDet;
             if (u < 0.0f || u > 1.0f) return false;
 
@@ -109,9 +106,9 @@ namespace Geo3D
 
         public static bool Test(Vector3 p, Triangle tri)
         {
-            Vector3 e1 = tri.v2 - tri.v0;
-            Vector3 e0 = tri.v1 - tri.v0;
-            Vector3 eP = p - tri.v0;
+            var e1 = tri.v2 - tri.v0;
+            var e0 = tri.v1 - tri.v0;
+            var eP = p - tri.v0;
 
             float dot01 = Vector3.Dot(e0, e1);
             float dot0P = Vector3.Dot(e0, eP);
@@ -168,7 +165,11 @@ namespace Geo3D
         // Provided for performance comparisons.
         public static bool TestSS(Triangle tri, AABB aabb)
         {
-            if (!Test(tri.CalcPlane(), aabb)) return false;
+            var n = tri.Cross();
+            var r = Vector3.Dot(aabb.extents, Util.Abs(n));
+            var s = Vector3.Dot(n, aabb.centre - tri.v0);
+
+            if (Mathf.Abs(s) > r) return false;
 
             if (!Geo2D.Intersect.Test(tri.XY, aabb.XY)) return false;
             if (!Geo2D.Intersect.Test(tri.YZ, aabb.YZ)) return false;
@@ -338,7 +339,12 @@ namespace Geo3D
             // If none of the edges of a degenerate triangle intersect then don't test any further.
             var n = tri.Cross();
             if (n.sqrMagnitude < Mathf.Epsilon) return false;
-            
+    
+            // Test if plane of triangle intersects the box.
+            var r = Vector3.Dot(aabb.extents, Util.Abs(n));
+            var s = Vector3.Dot(n, aabb.centre - tri.v0);
+            if (Mathf.Abs(s) > r) return false;
+
             // Test the four internal diagonals of the box against the triangle.
             // This catches the situations where the middle of the triangle is intersected
             // by the box but not any of the edges.

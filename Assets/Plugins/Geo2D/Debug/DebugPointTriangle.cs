@@ -18,6 +18,7 @@ namespace Geo2D
         void Update()
         {
             if (!_point || !_tri) return;
+            if (_tri._tri == null) return;
 
             Color color = new Color(1.0f, 1.0f, 0.0f);
 

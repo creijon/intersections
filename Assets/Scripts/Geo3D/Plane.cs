@@ -15,8 +15,7 @@ namespace Geo3D
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public float SignedDistance(Vector3 p)
         {
-            Vector3 o = n * d;
-            return Vector3.Dot(n, p - o);
+            return Vector3.Dot(n, p) - d;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

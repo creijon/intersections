@@ -132,14 +132,23 @@ namespace Geo3Dm
             return abs(s) <= r;
         }
 
+        public static bool Test(Edge edge, Plane plane)
+        {
+            var d0 = plane.SignedDistance(edge.v0);
+            var d1 = plane.SignedDistance(edge.v1);
+
+            if (d0 * d1 > 0.0f) return false;
+
+            return true;
+        }
+
         public static bool Test(Edge edge, Plane plane, out float t)
         {
             t = 0.0f;
             var d0 = plane.SignedDistance(edge.v0);
             var d1 = plane.SignedDistance(edge.v1);
 
-            if (abs(d0 - d1) < EPSILON) return true;
-            if (sign(d0) == sign(d1)) return false;
+            if (d0 * d1 > 0.0f) return false;
 
             t = d0 / (d0 - d1);
 
@@ -183,6 +192,7 @@ namespace Geo3Dm
         // t2 = { 0.075162, 0.071562, 0.029279 }
         // min = { 0.05576525, 0.0715705, 0.01354725 }
         // max = { 0.07522762, 0.09086225, 0.0286315 }
+		// Also fails to detect intersections with degenerate triangles
         public static bool TestSAT(Triangle tri, AABB aabb)
         {
             float p0, p1, p2, r;
@@ -322,7 +332,6 @@ namespace Geo3Dm
             float d = dot(normal, tri.v0);
             return Test(new Plane(normal, d), aabb);
         }
-
 
         public static bool TestNoBB(Triangle tri, AABB aabb)
         {

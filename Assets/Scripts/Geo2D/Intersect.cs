@@ -72,10 +72,10 @@ namespace Geo2D
         {
             var s = Util.SignedTriArea(tri.v0, p, tri.v2);
             var t = Util.SignedTriArea(tri.v1, p, tri.v0);
-            if ((s < 0) != (t < 0) && s != 0 && t != 0) return false;
+            if (s * t < 0) return false;
 
             var d = Util.SignedTriArea(tri.v2, p, tri.v1);
-            return d == 0 || (d < 0) == (s + t <= 0);
+            return (d * (s + t) >= 0);
         }
 
         public static bool Test(Triangle tri, Rect rect)

@@ -137,9 +137,7 @@ namespace Geo3Dm
             var d0 = plane.SignedDistance(edge.v0);
             var d1 = plane.SignedDistance(edge.v1);
 
-            if (d0 * d1 > 0.0f) return false;
-
-            return true;
+            return (d0 * d1 <= 0.0f);
         }
 
         public static bool Test(Edge edge, Plane plane, out float t)
@@ -394,4 +392,3 @@ namespace Geo3Dm
         }
     }
 }
-

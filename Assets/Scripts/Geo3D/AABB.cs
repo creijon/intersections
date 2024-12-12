@@ -20,6 +20,8 @@ namespace Geo3D
             SetMinMax(min, max);
         }
 
+        public float3 Size => extents * 2.0f;
+
         public Vector3 Min
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -34,12 +36,6 @@ namespace Geo3D
             get { return centre + extents; }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { SetMinMax(Min, value); }
-        }
-
-        public Vector3 Size
-        {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return extents * 2.0f; }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

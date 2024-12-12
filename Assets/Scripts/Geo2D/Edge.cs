@@ -13,21 +13,12 @@ namespace Geo2D
             this.v1 = v1;
         }
 
+        public Vector2 Axis => v1 - v0;
+        public Vector2 Centre => v0 + Axis * 0.5f;
+
         public Vector2 CalcDirection()
         {
             return Axis.normalized;
-        }
-
-        public Vector2 Axis
-        {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return v1 - v0; }
-        }
-
-        public Vector2 Centre
-        {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return v0 + Axis * 0.5f; }
         }
 
         public Vector2 v0;

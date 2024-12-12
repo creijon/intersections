@@ -19,6 +19,7 @@ namespace Geo3D
         public Geo2D.Triangle XY => new Geo2D.Triangle(Util.XY(v0), Util.XY(v1), Util.XY(v2));
         public Geo2D.Triangle YZ => new Geo2D.Triangle(Util.YZ(v0), Util.YZ(v1), Util.YZ(v2));
         public Geo2D.Triangle ZX => new Geo2D.Triangle(Util.ZX(v0), Util.ZX(v1), Util.ZX(v2));
+        public Vector3 Cross => Vector3.Cross(v1 - v0, v1 - v2);
 
         public AABB CalcBounds()
         {
@@ -28,17 +29,9 @@ namespace Geo3D
             return new AABB(min, max, true);
         }
 
-        public Vector3 Cross()
-        {
-            var edge0 = v1 - v0;
-            var edge1 = v1 - v2;
-
-            return Vector3.Cross(edge0, edge1);
-        }
-
         public Vector3 CalcNormal()
         {
-            return Cross().normalized;
+            return Cross.normalized;
         }
 
         public Plane CalcPlane()

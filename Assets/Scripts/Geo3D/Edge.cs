@@ -12,26 +12,16 @@ namespace Geo3D
             this.v1 = v1;
         }
 
+        public float3 Axis => v1 - v0;
+        public float3 Centre => v0 + Axis * 0.5f;
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Vector3 CalcDirection()
         {
-            return (v1 - v0).normalized;
-        }
-
-        public Vector3 Axis
-        {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return v1 - v0; }
-        }
-
-        public Vector3 Centre
-        {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return v0 + Axis * 0.5f; }
+            return Axis.normalized;
         }
 
         public Vector3 v0;
         public Vector3 v1;
     }
-
 }

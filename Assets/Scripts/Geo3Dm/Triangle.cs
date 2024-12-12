@@ -20,20 +20,16 @@ namespace Geo3Dm
         public Geo2Dm.Triangle XY => new Geo2Dm.Triangle(v0.xy, v1.xy, v2.xy);
         public Geo2Dm.Triangle YZ => new Geo2Dm.Triangle(v0.yz, v1.yz, v2.yz);
         public Geo2Dm.Triangle ZX => new Geo2Dm.Triangle(v0.zx, v1.zx, v2.zx);
+        public float3 Cross => cross(v1 - v0, v1 - v2);
 
         public AABB CalcBounds()
         {
             return new AABB(Util.Min(v0, v1, v2), Util.Max(v0, v1, v2), true);
         }
 
-        public float3 Cross()
-        {
-            return cross(v1 - v0, v1 - v2);
-        }
-
         public float3 CalcNormal()
         {
-            return normalize(Cross());
+            return normalize(Cross);
         }
 
         public Plane CalcPlane()

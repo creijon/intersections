@@ -174,7 +174,7 @@ namespace Geo3D
         // Provided for performance comparisons.
         public static bool TestSS(Triangle tri, AABB aabb)
         {
-            var n = tri.Cross();
+            var n = tri.Cross;
             var r = Vector3.Dot(aabb.extents, Util.Abs(n));
             var s = Vector3.Dot(n, aabb.centre - tri.v0);
 
@@ -347,7 +347,7 @@ namespace Geo3D
             if (Test(tri.Edge2, aabb)) return true;
 
             // If none of the edges of a degenerate triangle intersect then don't test any further.
-            var n = tri.Cross();
+            var n = tri.Cross;
             if (n.sqrMagnitude < Mathf.Epsilon) return false;
     
             // Test if plane of triangle intersects the box.

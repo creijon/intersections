@@ -1,5 +1,6 @@
 using System.Runtime.CompilerServices;
 using Unity.Mathematics;
+using static Unity.Mathematics.math;
 
 namespace Geo3Dm
 {

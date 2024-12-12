@@ -21,7 +21,7 @@ namespace Geo3Dm
         {
             if (!_aabb || !_tri) return;
 
-            var n = _tri._tri.Cross();
+            var n = _tri._tri.Cross;
             var r = dot(_aabb._aabb.extents, abs(n));
             var s = dot(n, _aabb._aabb.centre - _tri._tri.v0);
 

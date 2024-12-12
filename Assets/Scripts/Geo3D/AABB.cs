@@ -20,7 +20,7 @@ namespace Geo3D
             SetMinMax(min, max);
         }
 
-        public float3 Size => extents * 2.0f;
+        public Vector3 Size => extents * 2.0f;
 
         public Vector3 Min
         {

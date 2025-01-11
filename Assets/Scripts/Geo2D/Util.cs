@@ -26,7 +26,9 @@ namespace Geo2D
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float SignedTriArea(Vector2 a, Vector2 b, Vector2 c)
         {
-            return (a.x - c.x) * (b.y - c.y) - (a.y - c.y) * (b.x - c.x);
+            var ca = a - c;
+            var cb = b - c;
+            return ca.x * cb.y - ca.y * cb.x;
         }
     }
 }
